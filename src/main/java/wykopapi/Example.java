@@ -1,30 +1,25 @@
 package wykopapi;
 
-import wykopapi.api.ApiFactory;
-import wykopapi.api.EntriesApi;
-import wykopapi.api.StreamApi;
-import wykopapi.api.UserApi;
-import wykopapi.dto.Entry;
+import wykopapi.dto.AddEntry;
+import wykopapi.properties.PropertiesServiceFactory;
+import wykopapi.request.ApiRequest;
+import wykopapi.request.entries.EntriesAddRequest;
+import wykopapi.request.user.UserLoginRequest;
 import wykopapi.dto.Profile;
 
-import java.util.List;
 
 public class Example {
     public static void main(String[] args) {
-        ApiProperties apiProperties = new ApiProperties();
-        ApiFactory apiFactory = new ApiFactory(apiProperties.getAppKey(), apiProperties.getSecret());
-
-        UserApi userApi = apiFactory.getUserApi();
-        EntriesApi entriesApi = apiFactory.getEntriesApi();
-        StreamApi streamApi = apiFactory.getStreamApi();
-
-        Profile profile = userApi.login(apiProperties.getAccountKey())
-                .orElseThrow(() -> new RuntimeException("login failed"));
-        List<Entry> entryList = streamApi.getEntries(1)
-                .orElseThrow(() -> new RuntimeException("Could not get entries"));
-        for (Entry entry : entryList) {
-            entriesApi.addEntryComment("chciałem być marynarzem, chciałem pisać komentarze", entry.getId(), profile.getUserkey())
-                    .ifError(error -> System.out.println("coś się spierdoliło - " + error.getMessage()));
-        }
+        RequestExecutor executor = new RequestExecutor();
+        ApiRequest<Profile> userLoginRequest = new UserLoginRequest.Builder()
+                .setAccountKey(PropertiesServiceFactory.getPropertiesService().getAccountKey())
+                .build();
+        executor.execute(userLoginRequest).ifSuccess(profile -> {
+            ApiRequest<AddEntry> addEntryRequest =
+                    new EntriesAddRequest.Builder(
+                            "słucham psa jak gra",
+                            profile.getUserkey()).build();
+            executor.execute(addEntryRequest).ifSuccess(System.out::println);
+        });
     }
 }

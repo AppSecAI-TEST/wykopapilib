@@ -1,16 +1,16 @@
-package wykopapi;
+package wykopapi.properties;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Properties;
 
-public final class ApiProperties {
-    private final String appKey;
-    private final String secret;
-    private final String accountKey;
+public final class FilePropertiesService implements PropertiesService {
+    private String appKey;
+    private String secret;
+    private String accountKey;
 
-    public ApiProperties() {
+    FilePropertiesService() {
         Properties properties = new Properties();
         try {
             properties.load(new InputStreamReader(new FileInputStream("src/main/resources/application.properties")));
@@ -23,14 +23,17 @@ public final class ApiProperties {
         }
     }
 
+    @Override
     public String getAppKey() {
         return appKey;
     }
 
+    @Override
     public String getSecret() {
         return secret;
     }
 
+    @Override
     public String getAccountKey() {
         return accountKey;
     }

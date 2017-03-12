@@ -1,4 +1,4 @@
-package wykopapi.api;
+package wykopapi;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -28,7 +28,7 @@ public final class Authentication {
         return new Authentication();
     }
 
-    Map<String, String> getAuthParams() {
+    public Map<String, String> getAuthParams() {
         return Collections.unmodifiableMap(authParams);
     }
 }
