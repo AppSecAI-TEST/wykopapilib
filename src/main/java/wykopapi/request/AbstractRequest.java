@@ -29,10 +29,6 @@ public abstract class AbstractRequest<T> implements ApiRequest<T> {
     @Override
     public abstract Request getRequest();
 
-    public TypeToken<T> getTypeToken() {
-        return new TypeToken<T>(){};
-    }
-
     protected HttpUrl.Builder urlBuilder() {
         return new HttpUrl.Builder()
                 .scheme(SCHEME)
