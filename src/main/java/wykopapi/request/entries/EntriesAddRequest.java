@@ -62,7 +62,7 @@ public final class EntriesAddRequest extends AbstractRequest<AddEntry> {
         private String embedUrl;
         private File embedFile;
 
-        public Builder(String body, String userKey) {
+        public Builder(String userKey, String body) {
             this.body = body;
             this.userKey = userKey;
         }

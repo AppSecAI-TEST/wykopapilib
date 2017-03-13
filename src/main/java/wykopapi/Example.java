@@ -22,7 +22,7 @@ public class Example {
         Profile profile = executor.execute(userLoginRequest).orElseThrow(() -> new RuntimeException("RIP"));
 
         ApiRequest<AddEntry> addEntryRequest = new EntriesAddRequest
-                .Builder("słucham psa jak gra", profile.getUserkey())
+                .Builder(profile.getUserkey(), "słucham psa jak gra")
                 .setEmbedFile(new File("src/main/resources/dogpiano.jpg"))
                 .build();
         executor.execute(addEntryRequest)
