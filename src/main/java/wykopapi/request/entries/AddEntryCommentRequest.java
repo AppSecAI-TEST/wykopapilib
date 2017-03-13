@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import okhttp3.*;
 import wykopapi.dto.EntryOperation;
 import wykopapi.request.AbstractRequest;
+import wykopapi.request.ApiRequestBuilder;
 
 import java.io.File;
 import java.lang.reflect.Type;
@@ -49,5 +50,35 @@ public final class AddEntryCommentRequest extends AbstractRequest<EntryOperation
     @Override
     public Type getReturnType() {
         return EntryOperation.class;
+    }
+
+    public static class Builder implements ApiRequestBuilder<AddEntryCommentRequest> {
+        private String body;
+        private String userKey;
+        private int entryId;
+        private String embedUrl;
+        private File embedFile;
+
+        public Builder(String userKey, int entryId, String body) {
+            this.body = body;
+            this.entryId = entryId;
+            this.userKey = userKey;
+        }
+
+        public Builder setEmbedUrl(String embedUrl) {
+            this.embedUrl = embedUrl;
+            this.embedFile = null;
+            return this;
+        }
+
+        public Builder setEmbedFile(File embedFile) {
+            this.embedFile = embedFile;
+            this.embedUrl = null;
+            return this;
+        }
+
+        public AddEntryCommentRequest build() {
+            return new AddEntryCommentRequest(userKey, entryId, body, embedUrl, embedFile);
+        }
     }
 }

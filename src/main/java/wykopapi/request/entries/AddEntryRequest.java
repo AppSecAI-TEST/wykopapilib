@@ -63,11 +63,13 @@ public final class AddEntryRequest extends AbstractRequest<EntryOperation> {
 
         public Builder setEmbedUrl(String embedUrl) {
             this.embedUrl = embedUrl;
+            this.embedFile = null;
             return this;
         }
 
         public Builder setEmbedFile(File embedFile) {
             this.embedFile = embedFile;
+            this.embedUrl = null;
             return this;
         }
 
