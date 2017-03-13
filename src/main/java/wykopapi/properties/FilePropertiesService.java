@@ -11,14 +11,13 @@ public final class FilePropertiesService implements PropertiesService {
     private String accountKey;
 
     FilePropertiesService() {
-        Properties properties = new Properties();
         try {
+            Properties properties = new Properties();
             properties.load(new InputStreamReader(new FileInputStream("src/main/resources/application.properties")));
             appKey = properties.getProperty("appkey");
             secret = properties.getProperty("secret");
             accountKey = properties.getProperty("accountkey");
         } catch (IOException e) {
-            e.printStackTrace();
             throw new RuntimeException();
         }
     }

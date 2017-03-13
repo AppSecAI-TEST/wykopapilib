@@ -1,16 +1,13 @@
 package wykopapi.request.entries;
 
-import okhttp3.FormBody;
-import okhttp3.HttpUrl;
-import okhttp3.Request;
+import com.google.common.base.Strings;
+import okhttp3.*;
 import wykopapi.request.AbstractRequest;
 import wykopapi.request.ApiRequestBuilder;
 import wykopapi.dto.AddEntry;
 
 import java.io.File;
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
 
 public final class EntriesAddRequest extends AbstractRequest<AddEntry> {
     private final String body;
@@ -27,21 +24,30 @@ public final class EntriesAddRequest extends AbstractRequest<AddEntry> {
 
     @Override
     public Request getRequest() {
-        HttpUrl.Builder urlBuilder = urlBuilder().addPathSegment("entries")
-                .addPathSegment("add")
-                .addPathSegment("userkey").addEncodedPathSegment(userKey);
-        HttpUrl url = addAppKeyAndBuild(urlBuilder);
+        HttpUrl url = newUrlBuilder()
+                .addPathSegment("entries").addPathSegment("add")
+                .addPathSegment("userkey").addEncodedPathSegment(userKey)
+                .build();
 
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("body", body);
-        if (embedUrl != null) parameters.put("embed", embedUrl);
+        RequestBody requestBody = null;
+        if (embedFile != null) {
+            requestBody = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("body", body)
+                    .addFormDataPart("embed", "embed.jpg",
+                            RequestBody.create(MediaType.parse("image/jpeg"), embedFile))
+                    .build();
+        }
+        else {
+            FormBody.Builder builder = new FormBody.Builder()
+                    .addEncoded("body", body);
+            if (!Strings.isNullOrEmpty(embedUrl)) builder.addEncoded("embed", embedUrl);
+            requestBody = builder.build();
+        }
 
-        FormBody.Builder formBodyBuilder = new FormBody.Builder();
-        parameters.forEach(formBodyBuilder::addEncoded);
-
-        Request.Builder requestBuilder = new Request.Builder()
-                .url(url).post(formBodyBuilder.build());
-        return signRequestAndBuild(requestBuilder, url, parameters);
+        return new Request.Builder()
+                .url(url).post(requestBody)
+                .build();
     }
 
     @Override

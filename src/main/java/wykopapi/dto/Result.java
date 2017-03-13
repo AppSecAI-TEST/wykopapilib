@@ -52,12 +52,14 @@ public final class Result<T> {
         return value;
     }
 
-    public void ifSuccess(Consumer<T> consumer) {
+    public Result<T> ifSuccess(Consumer<T> consumer) {
         if (isSuccess()) consumer.accept(value);
+        return this;
     }
 
-    public void ifError(Consumer<ErrorInfo> consumer) {
+    public Result<T> ifError(Consumer<ErrorInfo> consumer) {
         if (isError()) consumer.accept(error);
+        return this;
     }
 
     public void consume(Consumer<T> ifSuccess, Consumer<ErrorInfo> ifError) {

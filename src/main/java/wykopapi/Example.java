@@ -1,25 +1,32 @@
 package wykopapi;
 
 import wykopapi.dto.AddEntry;
+import wykopapi.dto.Profile;
+import wykopapi.executor.RequestExecutor;
+import wykopapi.properties.PropertiesService;
 import wykopapi.properties.PropertiesServiceFactory;
 import wykopapi.request.ApiRequest;
 import wykopapi.request.entries.EntriesAddRequest;
 import wykopapi.request.user.UserLoginRequest;
-import wykopapi.dto.Profile;
+
+import java.io.File;
 
 
 public class Example {
     public static void main(String[] args) {
-        RequestExecutor executor = new RequestExecutor();
-        ApiRequest<Profile> userLoginRequest = new UserLoginRequest.Builder()
-                .setAccountKey(PropertiesServiceFactory.getPropertiesService().getAccountKey())
+        PropertiesService propertiesService = PropertiesServiceFactory.getPropertiesService();
+        RequestExecutor executor = new RequestExecutor(propertiesService);
+
+        ApiRequest<Profile> userLoginRequest = new UserLoginRequest.Builder(propertiesService.getAccountKey())
                 .build();
-        executor.execute(userLoginRequest).ifSuccess(profile -> {
-            ApiRequest<AddEntry> addEntryRequest =
-                    new EntriesAddRequest.Builder(
-                            "słucham psa jak gra",
-                            profile.getUserkey()).build();
-            executor.execute(addEntryRequest).ifSuccess(System.out::println);
-        });
+        Profile profile = executor.execute(userLoginRequest).orElseThrow(() -> new RuntimeException("RIP"));
+
+        ApiRequest<AddEntry> addEntryRequest = new EntriesAddRequest
+                .Builder("słucham psa jak gra", profile.getUserkey())
+                .setEmbedFile(new File("src/main/resources/dogpiano.jpg"))
+                .build();
+        executor.execute(addEntryRequest)
+                .ifSuccess(ok -> System.out.println("OK"))
+                .ifError(err -> System.out.println(err.getMessage()));
     }
 }

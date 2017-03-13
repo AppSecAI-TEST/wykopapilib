@@ -1,4 +1,4 @@
-package wykopapi;
+package wykopapi.executor;
 
 import com.google.gson.*;
 import okhttp3.OkHttpClient;
@@ -6,6 +6,7 @@ import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wykopapi.dto.Result;
+import wykopapi.properties.PropertiesService;
 import wykopapi.request.ApiRequest;
 import wykopapi.config.LocalDateTimeGsonAdapter;
 import wykopapi.dto.Error;
@@ -20,8 +21,9 @@ public final class RequestExecutor {
     private final OkHttpClient httpClient;
     private final Gson gson;
 
-    public RequestExecutor() {
+    public RequestExecutor(PropertiesService propertiesService) {
         this.httpClient = new OkHttpClient.Builder()
+                .addInterceptor(new AuthInterceptor(propertiesService.getAppKey(), propertiesService.getSecret()))
                 .build();
         this.gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeGsonAdapter())

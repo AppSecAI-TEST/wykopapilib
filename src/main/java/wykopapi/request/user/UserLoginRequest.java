@@ -1,33 +1,32 @@
 package wykopapi.request.user;
 
-import okhttp3.FormBody;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
-import wykopapi.Authentication;
 import wykopapi.request.AbstractRequest;
-import wykopapi.request.ApiRequestBuilder;
 import wykopapi.dto.Profile;
+import wykopapi.request.ApiRequestBuilder;
 
 import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class UserLoginRequest extends AbstractRequest<Profile> {
-    private final Authentication authentication;
+    private final Map<String, String> authParams;
 
-    private UserLoginRequest(Authentication authentication) {
-        this.authentication = authentication;
+    private UserLoginRequest(Map<String, String> authParams) {
+        this.authParams = new HashMap<>(authParams);
     }
 
     @Override
     public Request getRequest() {
-        HttpUrl url = addAppKeyAndBuild(urlBuilder()
-                .addPathSegment("user").addPathSegment("login"));
-        FormBody.Builder formBodyBuilder = new FormBody.Builder();
-        authentication.getAuthParams().forEach(formBodyBuilder::addEncoded);
+        HttpUrl url = newUrlBuilder()
+                .addPathSegment("user").addPathSegment("login")
+                .build();
 
-        return signRequestAndBuild(new Request.Builder()
-                .url(url)
-                .post(formBodyBuilder.build()),
-                url, authentication.getAuthParams());
+        return new Request.Builder()
+                .url(url).post(createBodyFromParams(authParams))
+                .build();
     }
 
     @Override
@@ -36,30 +35,21 @@ public final class UserLoginRequest extends AbstractRequest<Profile> {
     }
 
     public static class Builder implements ApiRequestBuilder<UserLoginRequest> {
-        private String username;
-        private String password;
-        private String accountKey;
+        private final Map<String, String> params;
 
-        public Builder setUsername(String username) {
-            this.username = username;
-            return this;
+        public Builder(String accountKey) {
+            this.params = Collections.singletonMap("accountkey", accountKey);
         }
 
-        public Builder setPassword(String password) {
-            this.password = password;
-            return this;
-        }
-
-        public Builder setAccountKey(String accountKey) {
-            this.accountKey = accountKey;
-            return this;
+        public Builder(String username, String password) {
+            this.params = new HashMap<>();
+            params.put("username", username);
+            params.put("password", password);
         }
 
         @Override
         public UserLoginRequest build() {
-            if (accountKey != null) return new UserLoginRequest(Authentication.of(accountKey));
-            else if (username != null && password != null) return new UserLoginRequest(Authentication.of(username, password));
-            else throw new IllegalStateException("Not enough data");
+            return new UserLoginRequest(Collections.unmodifiableMap(params));
         }
     }
 }

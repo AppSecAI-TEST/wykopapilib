@@ -8,7 +8,6 @@ import wykopapi.request.ApiRequestBuilder;
 import wykopapi.dto.Entry;
 
 import java.lang.reflect.Type;
-import java.util.Collections;
 import java.util.List;
 
 public final class StreamIndexRequest extends AbstractRequest<List<Entry>> {
@@ -20,10 +19,14 @@ public final class StreamIndexRequest extends AbstractRequest<List<Entry>> {
 
     @Override
     public Request getRequest() {
-        HttpUrl url = addAppKeyAndBuild(urlBuilder()
+        HttpUrl url = newUrlBuilder()
                 .addPathSegment("stream").addPathSegment("index")
-                .addPathSegment("page").addEncodedPathSegment(Integer.toString(page)));
-        return signRequestAndBuild(new Request.Builder().url(url).get(), url, Collections.emptyMap());
+                .addPathSegment("page").addEncodedPathSegment(String.valueOf(page))
+                .build();
+
+        return new Request.Builder()
+                .url(url).get()
+                .build();
     }
 
     @Override
@@ -34,7 +37,7 @@ public final class StreamIndexRequest extends AbstractRequest<List<Entry>> {
     public static class Builder implements ApiRequestBuilder<StreamIndexRequest> {
         private int page;
 
-        public Builder() {
+        Builder() {
             this.page = 1;
         }
 
