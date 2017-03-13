@@ -5,6 +5,7 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.util.Collections;
 import java.util.Map;
 
 public final class Extractor implements ParameterExtractor<RequestBody> {
@@ -25,7 +26,8 @@ public final class Extractor implements ParameterExtractor<RequestBody> {
             return multipartBodyParameterExtractor.extract((MultipartBody) requestBody);
         }
         else {
-            throw new NotImplementedException();
+            return Collections.emptyMap();
+            //throw new NotImplementedException();
         }
     }
 }

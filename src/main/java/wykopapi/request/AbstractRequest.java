@@ -1,9 +1,8 @@
 package wykopapi.request;
 
-import okhttp3.FormBody;
-import okhttp3.HttpUrl;
-import okhttp3.Request;
+import okhttp3.*;
 
+import java.io.File;
 import java.util.Map;
 
 public abstract class AbstractRequest<T> implements ApiRequest<T> {
@@ -26,5 +25,15 @@ public abstract class AbstractRequest<T> implements ApiRequest<T> {
         FormBody.Builder builder = new FormBody.Builder();
         params.forEach(builder::addEncoded);
         return builder.build();
+    }
+
+    protected MultipartBody createMultipartBody(Map<String, String> params, File file) {
+        MultipartBody.Builder bodyBuilder = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM);
+        params.forEach(bodyBuilder::addFormDataPart);
+        bodyBuilder.addFormDataPart("embed", "image.jpg",
+                RequestBody.create(MediaType.parse("image/jpeg"), file));
+
+        return bodyBuilder.build();
     }
 }

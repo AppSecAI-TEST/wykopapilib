@@ -4,18 +4,20 @@ import com.google.common.base.Strings;
 import okhttp3.*;
 import wykopapi.request.AbstractRequest;
 import wykopapi.request.ApiRequestBuilder;
-import wykopapi.dto.AddEntry;
+import wykopapi.dto.EntryOperation;
 
 import java.io.File;
 import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
 
-public final class EntriesAddRequest extends AbstractRequest<AddEntry> {
+public final class AddEntryRequest extends AbstractRequest<EntryOperation> {
     private final String body;
     private final String userKey;
     private final String embedUrl;
     private final File embedFile;
 
-    private EntriesAddRequest(String body, String userKey, String embedUrl, File embedFile) {
+    private AddEntryRequest(String body, String userKey, String embedUrl, File embedFile) {
         this.body = body;
         this.userKey = userKey;
         this.embedUrl = embedUrl;
@@ -29,21 +31,13 @@ public final class EntriesAddRequest extends AbstractRequest<AddEntry> {
                 .addPathSegment("userkey").addEncodedPathSegment(userKey)
                 .build();
 
-        RequestBody requestBody = null;
-        if (embedFile != null) {
-            requestBody = new MultipartBody.Builder()
-                    .setType(MultipartBody.FORM)
-                    .addFormDataPart("body", body)
-                    .addFormDataPart("embed", "embed.jpg",
-                            RequestBody.create(MediaType.parse("image/jpeg"), embedFile))
-                    .build();
-        }
-        else {
-            FormBody.Builder builder = new FormBody.Builder()
-                    .addEncoded("body", body);
-            if (!Strings.isNullOrEmpty(embedUrl)) builder.addEncoded("embed", embedUrl);
-            requestBody = builder.build();
-        }
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("body", body);
+        if (!Strings.isNullOrEmpty(embedUrl)) parameters.put("embed", embedUrl);
+
+        RequestBody requestBody = embedFile == null
+                ? createBodyFromParams(parameters)
+                : createMultipartBody(parameters, embedFile);
 
         return new Request.Builder()
                 .url(url).post(requestBody)
@@ -52,10 +46,10 @@ public final class EntriesAddRequest extends AbstractRequest<AddEntry> {
 
     @Override
     public Type getReturnType() {
-        return AddEntry.class;
+        return EntryOperation.class;
     }
 
-    public static class Builder implements ApiRequestBuilder<EntriesAddRequest> {
+    public static class Builder implements ApiRequestBuilder<AddEntryRequest> {
         private String body;
         private String userKey;
 
@@ -77,8 +71,8 @@ public final class EntriesAddRequest extends AbstractRequest<AddEntry> {
             return this;
         }
 
-        public EntriesAddRequest build() {
-            return new EntriesAddRequest(body, userKey, embedUrl, embedFile);
+        public AddEntryRequest build() {
+            return new AddEntryRequest(body, userKey, embedUrl, embedFile);
         }
     }
 }

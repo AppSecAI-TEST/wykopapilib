@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public final class AddEntry {
+public final class EntryOperation {
     private Integer id;
 }

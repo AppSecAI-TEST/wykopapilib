@@ -1,15 +1,18 @@
 package wykopapi;
 
-import wykopapi.dto.AddEntry;
+import wykopapi.dto.EntryOperation;
 import wykopapi.dto.Profile;
 import wykopapi.executor.RequestExecutor;
 import wykopapi.properties.PropertiesService;
 import wykopapi.properties.PropertiesServiceFactory;
 import wykopapi.request.ApiRequest;
-import wykopapi.request.entries.EntriesAddRequest;
-import wykopapi.request.user.UserLoginRequest;
+import wykopapi.request.entries.AddEntryRequest;
+import wykopapi.request.entries.DeleteEntryRequest;
+import wykopapi.request.entries.EditEntryRequest;
+import wykopapi.request.entries.GetEntryRequest;
+import wykopapi.request.user.LoginRequest;
 
-import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 
 public class Example {
@@ -17,16 +20,16 @@ public class Example {
         PropertiesService propertiesService = PropertiesServiceFactory.getPropertiesService();
         RequestExecutor executor = new RequestExecutor(propertiesService);
 
-        ApiRequest<Profile> userLoginRequest = new UserLoginRequest.Builder(propertiesService.getAccountKey())
+        ApiRequest<Profile> userLoginRequest = new LoginRequest.Builder(propertiesService.getAccountKey())
                 .build();
         Profile profile = executor.execute(userLoginRequest).orElseThrow(() -> new RuntimeException("RIP"));
 
-        ApiRequest<AddEntry> addEntryRequest = new EntriesAddRequest
-                .Builder(profile.getUserkey(), "słucham psa jak gra")
-                .setEmbedFile(new File("src/main/resources/dogpiano.jpg"))
+        AddEntryRequest addEntryRequest = new AddEntryRequest.Builder(profile.getUserkey(), "test 123")
                 .build();
-        executor.execute(addEntryRequest)
-                .ifSuccess(ok -> System.out.println("OK"))
-                .ifError(err -> System.out.println(err.getMessage()));
+        EntryOperation entryOperation = executor.execute(addEntryRequest).orElseThrow(() -> new RuntimeException("RIP"));
+
+        DeleteEntryRequest deleteEntryRequest = new DeleteEntryRequest.Builder(profile.getUserkey(), entryOperation.getId())
+                .build();
+        executor.execute(deleteEntryRequest).ifSuccess(System.out::println).ifError(System.out::println);
     }
 }

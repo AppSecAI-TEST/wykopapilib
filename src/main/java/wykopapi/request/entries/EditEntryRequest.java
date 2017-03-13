@@ -2,19 +2,19 @@ package wykopapi.request.entries;
 
 import okhttp3.HttpUrl;
 import okhttp3.Request;
-import wykopapi.dto.AddEntry;
+import wykopapi.dto.EntryOperation;
 import wykopapi.request.AbstractRequest;
 import wykopapi.request.ApiRequestBuilder;
 
 import java.lang.reflect.Type;
 import java.util.Collections;
 
-public class EntriesEditRequest extends AbstractRequest<AddEntry> {
+public final class EditEntryRequest extends AbstractRequest<EntryOperation> {
     private final String userKey;
     private final String body;
     private final int entryId;
 
-    private EntriesEditRequest(String userKey, int entryId, String body) {
+    private EditEntryRequest(String userKey, int entryId, String body) {
         this.userKey = userKey;
         this.body = body;
         this.entryId = entryId;
@@ -35,10 +35,10 @@ public class EntriesEditRequest extends AbstractRequest<AddEntry> {
 
     @Override
     public Type getReturnType() {
-        return AddEntry.class;
+        return EntryOperation.class;
     }
 
-    public static class Builder implements ApiRequestBuilder<EntriesEditRequest> {
+    public static class Builder implements ApiRequestBuilder<EditEntryRequest> {
         private int entryId;
         private String userKey;
         private String body;
@@ -50,8 +50,8 @@ public class EntriesEditRequest extends AbstractRequest<AddEntry> {
         }
 
         @Override
-        public EntriesEditRequest build() {
-            return new EntriesEditRequest(userKey, entryId, body);
+        public EditEntryRequest build() {
+            return new EditEntryRequest(userKey, entryId, body);
         }
     }
 }

@@ -11,10 +11,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class UserLoginRequest extends AbstractRequest<Profile> {
+public final class LoginRequest extends AbstractRequest<Profile> {
     private final Map<String, String> authParams;
 
-    private UserLoginRequest(Map<String, String> authParams) {
+    private LoginRequest(Map<String, String> authParams) {
         this.authParams = new HashMap<>(authParams);
     }
 
@@ -34,7 +34,7 @@ public final class UserLoginRequest extends AbstractRequest<Profile> {
         return Profile.class;
     }
 
-    public static class Builder implements ApiRequestBuilder<UserLoginRequest> {
+    public static class Builder implements ApiRequestBuilder<LoginRequest> {
         private final Map<String, String> params;
 
         public Builder(String accountKey) {
@@ -48,8 +48,8 @@ public final class UserLoginRequest extends AbstractRequest<Profile> {
         }
 
         @Override
-        public UserLoginRequest build() {
-            return new UserLoginRequest(Collections.unmodifiableMap(params));
+        public LoginRequest build() {
+            return new LoginRequest(Collections.unmodifiableMap(params));
         }
     }
 }

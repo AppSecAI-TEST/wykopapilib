@@ -8,10 +8,10 @@ import wykopapi.request.ApiRequestBuilder;
 
 import java.lang.reflect.Type;
 
-public class EntriesIndexRequest extends AbstractRequest<Entry> {
+public final class GetEntryRequest extends AbstractRequest<Entry> {
     private final int entryId;
 
-    private EntriesIndexRequest(int entryId) {
+    private GetEntryRequest(int entryId) {
         this.entryId = entryId;
     }
 
@@ -32,7 +32,7 @@ public class EntriesIndexRequest extends AbstractRequest<Entry> {
         return Entry.class;
     }
 
-    public static class Builder implements ApiRequestBuilder<EntriesIndexRequest> {
+    public static class Builder implements ApiRequestBuilder<GetEntryRequest> {
         private int entryId;
 
         public Builder(int entryId) {
@@ -40,8 +40,8 @@ public class EntriesIndexRequest extends AbstractRequest<Entry> {
         }
 
         @Override
-        public EntriesIndexRequest build() {
-            return new EntriesIndexRequest(entryId);
+        public GetEntryRequest build() {
+            return new GetEntryRequest(entryId);
         }
     }
 
