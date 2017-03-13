@@ -27,7 +27,6 @@ public final class Extractor implements ParameterExtractor<RequestBody> {
         }
         else {
             return Collections.emptyMap();
-            //throw new NotImplementedException();
         }
     }
 }

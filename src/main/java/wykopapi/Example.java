@@ -7,7 +7,9 @@ import wykopapi.properties.PropertiesService;
 import wykopapi.properties.PropertiesServiceFactory;
 import wykopapi.request.ApiRequest;
 import wykopapi.request.entries.*;
+import wykopapi.request.rank.RankIndexRequest;
 import wykopapi.request.stream.StreamIndexRequest;
+import wykopapi.request.tags.TagsIndexRequest;
 import wykopapi.request.user.LoginRequest;
 
 import java.util.List;

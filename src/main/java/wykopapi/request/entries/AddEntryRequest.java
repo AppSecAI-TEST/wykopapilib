@@ -12,14 +12,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class AddEntryRequest extends AbstractRequest<EntryOperation> {
-    private final String body;
     private final String userKey;
+    private final String body;
     private final String embedUrl;
     private final File embedFile;
 
-    private AddEntryRequest(String body, String userKey, String embedUrl, File embedFile) {
-        this.body = body;
+    private AddEntryRequest(String userKey, String body, String embedUrl, File embedFile) {
         this.userKey = userKey;
+        this.body = body;
         this.embedUrl = embedUrl;
         this.embedFile = embedFile;
     }
@@ -50,9 +50,8 @@ public final class AddEntryRequest extends AbstractRequest<EntryOperation> {
     }
 
     public static class Builder implements ApiRequestBuilder<AddEntryRequest> {
-        private String body;
         private String userKey;
-
+        private String body;
         private String embedUrl;
         private File embedFile;
 
@@ -74,7 +73,7 @@ public final class AddEntryRequest extends AbstractRequest<EntryOperation> {
         }
 
         public AddEntryRequest build() {
-            return new AddEntryRequest(body, userKey, embedUrl, embedFile);
+            return new AddEntryRequest(userKey, body, embedUrl, embedFile);
         }
     }
 }

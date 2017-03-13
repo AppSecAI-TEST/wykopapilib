@@ -53,9 +53,9 @@ public final class AddEntryCommentRequest extends AbstractRequest<EntryOperation
     }
 
     public static class Builder implements ApiRequestBuilder<AddEntryCommentRequest> {
-        private String body;
         private String userKey;
         private int entryId;
+        private String body;
         private String embedUrl;
         private File embedFile;
 
