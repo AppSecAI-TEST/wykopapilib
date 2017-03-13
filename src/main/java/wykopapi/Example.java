@@ -1,7 +1,6 @@
 package wykopapi;
 
 import wykopapi.dto.Entry;
-import wykopapi.dto.EntryOperation;
 import wykopapi.dto.Profile;
 import wykopapi.executor.RequestExecutor;
 import wykopapi.properties.PropertiesService;
@@ -12,7 +11,6 @@ import wykopapi.request.stream.StreamIndexRequest;
 import wykopapi.request.user.LoginRequest;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 
 public class Example {
@@ -27,13 +25,13 @@ public class Example {
         StreamIndexRequest streamIndexRequest = new StreamIndexRequest.Builder().build();
         List<Entry> entries = executor.execute(streamIndexRequest).get();
 
-        Entry randomEntry = entries.stream().findAny().get();
-        FavoriteEntryRequest favoriteEntryRequest = new FavoriteEntryRequest
-                .Builder(profile.getUserkey(), randomEntry.getId())
-                .build();
+        entries.forEach(entry -> {
+            VoteEntryRequest voteEntryRequest = new VoteEntryRequest
+                    .Builder(profile.getUserkey(), entry.getId())
+                    .build();
 
-        executor.execute(favoriteEntryRequest)
-                .ifSuccess(System.out::println)
-                .ifError(System.out::println);
+            executor.execute(voteEntryRequest)
+                    .ifError(error -> System.out.println(error.getMessage()));
+        });
     }
 }
