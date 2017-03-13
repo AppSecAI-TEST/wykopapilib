@@ -1,4 +1,6 @@
-package wykopapi.dto;
+package wykopapi.request;
+
+import wykopapi.dto.ErrorInfo;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;

@@ -1,6 +1,6 @@
 package wykopapi.properties;
 
-public final class SimplePropertiesService implements PropertiesService {
+final class SimplePropertiesService implements PropertiesService {
     private static final String APP_KEY = "<appkey>";
     private static final String SECRET = "<secret>";
     private static final String ACCOUNT_KEY = "<accountkey>";

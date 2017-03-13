@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Properties;
 
-public final class FilePropertiesService implements PropertiesService {
+final class FilePropertiesService implements PropertiesService {
     private String appKey;
     private String secret;
     private String accountKey;

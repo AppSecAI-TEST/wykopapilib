@@ -7,7 +7,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Map;
 
-public class Extractor implements ParameterExtractor<RequestBody> {
+public final class Extractor implements ParameterExtractor<RequestBody> {
     private final ParameterExtractor<FormBody> formBodyParameterExtractor;
     private final ParameterExtractor<MultipartBody> multipartBodyParameterExtractor;
 

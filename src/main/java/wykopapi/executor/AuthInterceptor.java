@@ -11,13 +11,13 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class AuthInterceptor implements Interceptor {
+final class AuthInterceptor implements Interceptor {
     private final String appKey;
     private final String secret;
     private final RequestUtils requestUtils;
     private final ParameterExtractor<RequestBody> parameterExtractor;
 
-    public AuthInterceptor(String appKey, String secret) {
+    AuthInterceptor(String appKey, String secret) {
         this.appKey = appKey;
         this.secret = secret;
         this.requestUtils = new RequestUtils();
@@ -43,6 +43,7 @@ public class AuthInterceptor implements Interceptor {
                 .url(url)
                 .addHeader("apisign", requestUtils.getMD5(stringBuilder.toString()))
                 .build();
+
         return chain.proceed(request);
     }
 }

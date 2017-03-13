@@ -5,10 +5,9 @@ import okhttp3.OkHttpClient;
 import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import wykopapi.dto.Result;
+import wykopapi.request.Result;
 import wykopapi.properties.PropertiesService;
 import wykopapi.request.ApiRequest;
-import wykopapi.config.LocalDateTimeGsonAdapter;
 import wykopapi.dto.Error;
 import wykopapi.dto.ErrorInfo;
 
@@ -26,7 +25,7 @@ public final class RequestExecutor {
                 .addInterceptor(new AuthInterceptor(propertiesService.getAppKey(), propertiesService.getSecret()))
                 .build();
         this.gson = new GsonBuilder()
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeGsonAdapter())
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeJsonAdapter())
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .create();
     }
