@@ -37,7 +37,7 @@ public final class StreamIndexRequest extends AbstractRequest<List<Entry>> {
     public static class Builder implements ApiRequestBuilder<StreamIndexRequest> {
         private int page;
 
-        Builder() {
+        public Builder() {
             this.page = 1;
         }
 
