@@ -10,20 +10,24 @@ import java.lang.reflect.Type;
 
 public final class GetEntryRequest extends AbstractRequest<Entry> {
     private final int entryId;
+    private final boolean clearOutput;
 
-    private GetEntryRequest(int entryId) {
+    private GetEntryRequest(int entryId, boolean clearOutput) {
         this.entryId = entryId;
+        this.clearOutput = clearOutput;
     }
 
     @Override
     public Request getRequest() {
-        HttpUrl url = newUrlBuilder()
+        HttpUrl.Builder urlBuilder = newUrlBuilder()
                 .addPathSegment("entries").addPathSegment("index")
-                .addEncodedPathSegment(String.valueOf(entryId))
-                .build();
+                .addEncodedPathSegment(String.valueOf(entryId));
+        if (clearOutput) {
+            urlBuilder.addPathSegment("output").addPathSegment("clear");
+        }
 
         return new Request.Builder()
-                .url(url).get()
+                .url(urlBuilder.build()).get()
                 .build();
     }
 
@@ -34,14 +38,20 @@ public final class GetEntryRequest extends AbstractRequest<Entry> {
 
     public static class Builder implements ApiRequestBuilder<GetEntryRequest> {
         private int entryId;
+        private boolean clearOutput;
 
         public Builder(int entryId) {
             this.entryId = entryId;
         }
 
+        public Builder setClearOutput(boolean clearOutput) {
+            this.clearOutput = clearOutput;
+            return this;
+        }
+
         @Override
         public GetEntryRequest build() {
-            return new GetEntryRequest(entryId);
+            return new GetEntryRequest(entryId, clearOutput);
         }
     }
 

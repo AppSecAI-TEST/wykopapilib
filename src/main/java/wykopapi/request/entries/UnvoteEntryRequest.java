@@ -8,7 +8,7 @@ import wykopapi.request.ApiRequestBuilder;
 
 import java.lang.reflect.Type;
 
-public class UnvoteEntryRequest extends AbstractRequest<VoteEntry> {
+public final class UnvoteEntryRequest extends AbstractRequest<VoteEntry> {
     private final String userKey;
     private final int entryId;
 

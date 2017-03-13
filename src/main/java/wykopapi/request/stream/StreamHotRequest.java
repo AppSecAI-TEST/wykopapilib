@@ -10,25 +10,27 @@ import wykopapi.request.ApiRequestBuilder;
 import java.lang.reflect.Type;
 import java.util.List;
 
-public class StreamHotRequest extends AbstractRequest<List<Entry>> {
+public final class StreamHotRequest extends AbstractRequest<List<Entry>> {
     private final int page;
     private final int period;
+    private final boolean clearOutput;
 
-    private StreamHotRequest(int page, int period) {
+    private StreamHotRequest(int page, int period, boolean clearOutput) {
         this.page = page;
         this.period = period;
+        this.clearOutput = clearOutput;
     }
 
     @Override
     public Request getRequest() {
-        HttpUrl url = newUrlBuilder()
+        HttpUrl.Builder urlBuilder = newUrlBuilder()
                 .addPathSegment("stream").addPathSegment("hot")
                 .addPathSegment("page").addEncodedPathSegment(String.valueOf(page))
-                .addPathSegment("period").addEncodedPathSegment(String.valueOf(period))
-                .build();
+                .addPathSegment("period").addEncodedPathSegment(String.valueOf(period));
+        if (clearOutput) urlBuilder.addPathSegment("output").addPathSegment("clear");
 
         return new Request.Builder()
-                .url(url).get()
+                .url(urlBuilder.build()).get()
                 .build();
     }
 
@@ -40,6 +42,7 @@ public class StreamHotRequest extends AbstractRequest<List<Entry>> {
     public static class Builder implements ApiRequestBuilder<StreamHotRequest> {
         private int page;
         private int period;
+        private boolean clearOutput;
 
         public Builder() {
             this.page = 1;
@@ -56,9 +59,14 @@ public class StreamHotRequest extends AbstractRequest<List<Entry>> {
             return this;
         }
 
+        public Builder setClearOutput(boolean clearOutput) {
+            this.clearOutput = clearOutput;
+            return this;
+        }
+
         @Override
         public StreamHotRequest build() {
-            return new StreamHotRequest(page, period);
+            return new StreamHotRequest(page, period, clearOutput);
         }
     }
 }

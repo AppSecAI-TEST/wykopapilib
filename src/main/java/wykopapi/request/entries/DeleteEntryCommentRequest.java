@@ -8,7 +8,7 @@ import wykopapi.request.ApiRequestBuilder;
 
 import java.lang.reflect.Type;
 
-public class DeleteEntryCommentRequest extends AbstractRequest<EntryOperation> {
+public final class DeleteEntryCommentRequest extends AbstractRequest<EntryOperation> {
     private final String userKey;
     private final int entryId;
     private final int commentId;

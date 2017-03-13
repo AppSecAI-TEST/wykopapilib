@@ -12,20 +12,22 @@ import java.util.List;
 
 public final class StreamIndexRequest extends AbstractRequest<List<Entry>> {
     private final int page;
+    private final boolean clearOutput;
 
-    private StreamIndexRequest(int page) {
+    private StreamIndexRequest(int page, boolean clearOutput) {
         this.page = page;
+        this.clearOutput = clearOutput;
     }
 
     @Override
     public Request getRequest() {
-        HttpUrl url = newUrlBuilder()
+        HttpUrl.Builder urlBuilder = newUrlBuilder()
                 .addPathSegment("stream").addPathSegment("index")
-                .addPathSegment("page").addEncodedPathSegment(String.valueOf(page))
-                .build();
+                .addPathSegment("page").addEncodedPathSegment(String.valueOf(page));
+        if (clearOutput) urlBuilder.addPathSegment("output").addPathSegment("clear");
 
         return new Request.Builder()
-                .url(url).get()
+                .url(urlBuilder.build()).get()
                 .build();
     }
 
@@ -36,6 +38,7 @@ public final class StreamIndexRequest extends AbstractRequest<List<Entry>> {
 
     public static class Builder implements ApiRequestBuilder<StreamIndexRequest> {
         private int page;
+        private boolean clearOutput;
 
         public Builder() {
             this.page = 1;
@@ -46,9 +49,14 @@ public final class StreamIndexRequest extends AbstractRequest<List<Entry>> {
             return this;
         }
 
+        public Builder setClearOutput(boolean clearOutput) {
+            this.clearOutput = clearOutput;
+            return this;
+        }
+
         @Override
         public StreamIndexRequest build() {
-            return new StreamIndexRequest(page);
+            return new StreamIndexRequest(page, clearOutput);
         }
     }
 }

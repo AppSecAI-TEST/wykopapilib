@@ -7,7 +7,7 @@ import wykopapi.request.ApiRequestBuilder;
 
 import java.lang.reflect.Type;
 
-public class FavoriteEntryRequest extends AbstractRequest<Boolean> {
+public final class FavoriteEntryRequest extends AbstractRequest<Boolean> {
     private final String userKey;
     private final int entryId;
 
