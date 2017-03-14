@@ -12,4 +12,4 @@ You need to have: JDK+JRE 8, git (optional)
   - windows: gradlew fatJar
   - linux: ./gradlew fatJar
 5. Run application:
-  java -cp build/libs/wykopapilib-all-1.0-SNAPSHOT.jar wykopapilib.Example
+  - java -cp build/libs/wykopapilib-all-1.0-SNAPSHOT.jar wykopapilib.examples.SaveVotersAvatar

@@ -1,8 +1,10 @@
 package wykopapi.examples;
 
-import wykopapi.dto.Entry;
-import wykopapi.executor.RequestExecutor;
-import wykopapi.request.entries.GetEntryRequest;
+import wykopapi.api.dto.Entry;
+import wykopapi.api.executor.RequestExecutor;
+import wykopapi.api.properties.PropertiesService;
+import wykopapi.api.properties.SimplePropertiesService;
+import wykopapi.api.request.entries.GetEntryRequest;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,26 +14,28 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Scanner;
 
 public class SaveVotersAvatars {
-    public void run(RequestExecutor requestExecutor, int entryId) {
-        String directoryName = "AVATARS_" +
-                entryId +
-                "_" +
+    public static void main(String[] args) throws IOException {
+        PropertiesService propertiesService = new SimplePropertiesService
+                .Builder("appkey", "secret").build();
+        RequestExecutor executor = new RequestExecutor(propertiesService);
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Entry id: ");
+        int entryId = scanner.nextInt();
+
+        String directoryName = "AVATARS_" + entryId + "_" +
                 LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMyyHHmmss")) +
                 File.separator;
 
-        try {
-            Files.createDirectory(Paths.get(directoryName));
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException();
-        }
+        Files.createDirectories(Paths.get(directoryName));
 
         System.out.println("Downloading entry data...");
 
         GetEntryRequest getEntryRequest = new GetEntryRequest.Builder(entryId).setClearOutput(true).build();
-        Entry entry = requestExecutor.execute(getEntryRequest).orElseThrow(() -> new RuntimeException("Could not download entry"));
+        Entry entry =executor.execute(getEntryRequest).orElseThrow(() -> new RuntimeException("Could not download entry"));
 
         System.out.println("Downloading images...");
 
