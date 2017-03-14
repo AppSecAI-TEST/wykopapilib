@@ -1,22 +1,49 @@
 package wykopapi.properties;
 
 public final class SimplePropertiesService implements PropertiesService {
-    private static final String APP_KEY = "<appkey>";
-    private static final String SECRET = "<secret>";
-    private static final String ACCOUNT_KEY = "<accountkey>";
+    private final String appKey;
+    private final String secret;
+    private final String accountKey;
+
+    private SimplePropertiesService(String appKey, String secret, String accountKey) {
+        this.appKey = appKey;
+        this.secret = secret;
+        this.accountKey = accountKey;
+    }
 
     @Override
     public String getAppKey() {
-        return APP_KEY;
+        return appKey;
     }
 
     @Override
     public String getSecret() {
-        return SECRET;
+        return secret;
     }
 
     @Override
     public String getAccountKey() {
-        return ACCOUNT_KEY;
+        return accountKey;
+    }
+
+    public static class Builder {
+        private String appKey;
+        private String secret;
+        private String accountKey;
+
+        public Builder(String appKey, String secret) {
+            if (appKey == null || secret == null) throw new NullPointerException();
+            this.appKey = appKey;
+            this.secret = secret;
+        }
+
+        public Builder setAccountKey(String accountKey) {
+            this.accountKey = accountKey;
+            return this;
+        }
+
+        public SimplePropertiesService build() {
+            return new SimplePropertiesService(appKey, secret, accountKey);
+        }
     }
 }

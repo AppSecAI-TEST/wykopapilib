@@ -2,6 +2,8 @@ group 'wykopapilib'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'java'
+apply plugin: 'jar'
+apply plugin: 'application'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
