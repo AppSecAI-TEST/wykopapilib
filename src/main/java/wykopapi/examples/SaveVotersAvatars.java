@@ -3,7 +3,6 @@ package wykopapi.examples;
 import wykopapi.dto.Entry;
 import wykopapi.executor.RequestExecutor;
 import wykopapi.properties.PropertiesService;
-import wykopapi.properties.PropertiesServiceFactory;
 import wykopapi.request.entries.GetEntryRequest;
 
 import java.io.File;
@@ -16,12 +15,32 @@ import java.util.Scanner;
 
 public class SaveVotersAvatars {
     public static void main(String[] args) {
-        PropertiesService propertiesService = PropertiesServiceFactory.getPropertiesService();
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("App Key: ");
+        String appKey = scanner.next();
+        System.out.print("Secret: ");
+        String secret = scanner.next();
+        System.out.println("Entry id: ");
+        int entryId = scanner.nextInt();
+
+        PropertiesService propertiesService = new PropertiesService() {
+            @Override
+            public String getAppKey() {
+                return appKey;
+            }
+
+            @Override
+            public String getSecret() {
+                return secret;
+            }
+
+            @Override
+            public String getAccountKey() {
+                return null;
+            }
+        };
         RequestExecutor requestExecutor = new RequestExecutor(propertiesService);
 
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Podaj identyfikator wpisu: ");
-        int entryId = scanner.nextInt();
         String directoryName = "AVATARS_" + entryId + File.separator;
         try {
             Files.createDirectory(Paths.get(directoryName));
@@ -39,7 +58,7 @@ public class SaveVotersAvatars {
             try(InputStream in = new URL(imageUrl).openStream()){
                 Files.copy(in, Paths.get(filename));
             } catch (IOException e) {
-                System.out.println("Culd not download image: " + voter.getAuthor());
+                System.out.println("Could not download image: " + voter.getAuthor());
             }
         });
     }

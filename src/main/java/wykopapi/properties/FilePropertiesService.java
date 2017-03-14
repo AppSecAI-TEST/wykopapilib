@@ -5,15 +5,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Properties;
 
-final class FilePropertiesService implements PropertiesService {
+public final class FilePropertiesService implements PropertiesService {
     private String appKey;
     private String secret;
     private String accountKey;
 
-    FilePropertiesService() {
+    public FilePropertiesService(String filename) {
         try {
             Properties properties = new Properties();
-            properties.load(new InputStreamReader(new FileInputStream("src/main/resources/application.properties")));
+            properties.load(new InputStreamReader(new FileInputStream(filename)));
             appKey = properties.getProperty("appkey");
             secret = properties.getProperty("secret");
             accountKey = properties.getProperty("accountkey");
