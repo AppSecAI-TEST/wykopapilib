@@ -20,7 +20,7 @@ public class NightShiftXD {
                 .getUserkey();
 
         AddEntryRequest addEntryRequest = new AddEntryRequest.Builder(userKey,
-                "NOCNA! 01:00:00 #listaobecnosci")
+                "NOCNA!! 01:00:00 #listaobecnosci")
                 .build();
 
         while (true) {
@@ -30,7 +30,7 @@ public class NightShiftXD {
                         .ifSuccess(e -> System.out.println(e.getId()))
                         .ifError(e -> System.out.println(e.getMessage()));
             }
-            else if (dateTime.getHour() == 1) break;
+            else if (dateTime.getHour() > 1) break;
         }
     }
 }

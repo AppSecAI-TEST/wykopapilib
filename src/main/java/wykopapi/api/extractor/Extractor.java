@@ -24,8 +24,6 @@ public final class Extractor implements ParameterExtractor<RequestBody> {
         else if (requestBody instanceof MultipartBody) {
             return multipartBodyParameterExtractor.extract((MultipartBody) requestBody);
         }
-        else {
-            return Collections.emptyMap();
-        }
+        return Collections.emptyMap();
     }
 }
