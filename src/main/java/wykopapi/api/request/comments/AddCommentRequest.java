@@ -1,24 +1,30 @@
-package wykopapi.api.request.entries;
+package wykopapi.api.request.comments;
 
 import com.google.common.base.Strings;
-import okhttp3.*;
+import okhttp3.HttpUrl;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import wykopapi.api.dto.IdResult;
 import wykopapi.api.request.AbstractRequest;
 import wykopapi.api.request.ApiRequestBuilder;
-import wykopapi.api.dto.IdResult;
 
 import java.io.File;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class AddEntryRequest extends AbstractRequest<IdResult> {
+public class AddCommentRequest extends AbstractRequest<IdResult> {
     private final String userKey;
+    private final int linkId;
+    private final int commentId;
     private final String body;
     private final String embedUrl;
     private final File embedFile;
 
-    private AddEntryRequest(String userKey, String body, String embedUrl, File embedFile) {
+    private AddCommentRequest(String userKey, int linkId, int commentId, String body, String embedUrl, File embedFile) {
         this.userKey = userKey;
+        this.linkId = linkId;
+        this.commentId = commentId;
         this.body = body;
         this.embedUrl = embedUrl;
         this.embedFile = embedFile;
@@ -27,7 +33,8 @@ public final class AddEntryRequest extends AbstractRequest<IdResult> {
     @Override
     public Request getRequest() {
         HttpUrl url = newUrlBuilder()
-                .addPathSegment("entries").addPathSegment("add")
+                .addPathSegment("comments").addPathSegment("add")
+                .addEncodedPathSegment(String.valueOf(linkId)).addEncodedPathSegment(String.valueOf(commentId)) // TODO what if comment id is not set
                 .addPathSegment("userkey").addEncodedPathSegment(userKey)
                 .build();
 
@@ -49,14 +56,22 @@ public final class AddEntryRequest extends AbstractRequest<IdResult> {
         return IdResult.class;
     }
 
-    public static class Builder implements ApiRequestBuilder<AddEntryRequest> {
+    public static class Builder implements ApiRequestBuilder<AddCommentRequest> {
         private String userKey;
+        private int linkId;
+        private int commentId;
         private String body;
         private String embedUrl;
         private File embedFile;
 
-        public Builder(String userKey) {
+        public Builder(String userKey, int linkId) {
             this.userKey = userKey;
+            this.linkId = linkId;
+        }
+
+        public Builder setCommentId(int commentId) {
+            this.commentId = commentId;
+            return this;
         }
 
         public Builder setBody(String body) {
@@ -76,8 +91,9 @@ public final class AddEntryRequest extends AbstractRequest<IdResult> {
             return this;
         }
 
-        public AddEntryRequest build() {
-            return new AddEntryRequest(userKey, body, embedUrl, embedFile);
+        @Override
+        public AddCommentRequest build() {
+            return new AddCommentRequest(userKey, linkId, commentId, body, embedUrl, embedFile);
         }
     }
 }

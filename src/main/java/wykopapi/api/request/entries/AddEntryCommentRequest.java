@@ -2,7 +2,7 @@ package wykopapi.api.request.entries;
 
 import com.google.common.base.Strings;
 import okhttp3.*;
-import wykopapi.api.dto.EntryOperation;
+import wykopapi.api.dto.IdResult;
 import wykopapi.api.request.AbstractRequest;
 import wykopapi.api.request.ApiRequestBuilder;
 
@@ -11,7 +11,7 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class AddEntryCommentRequest extends AbstractRequest<EntryOperation> {
+public final class AddEntryCommentRequest extends AbstractRequest<IdResult> {
     private final String userKey;
     private final int entryId;
     private final String body;
@@ -35,7 +35,7 @@ public final class AddEntryCommentRequest extends AbstractRequest<EntryOperation
                 .build();
 
         Map<String, String> parameters = new HashMap<>();
-        parameters.put("body", body);
+        if (!Strings.isNullOrEmpty(body)) parameters.put("body", body);
         if (!Strings.isNullOrEmpty(embedUrl)) parameters.put("embed", embedUrl);
 
         RequestBody requestBody = embedFile == null
@@ -49,7 +49,7 @@ public final class AddEntryCommentRequest extends AbstractRequest<EntryOperation
 
     @Override
     public Type getReturnType() {
-        return EntryOperation.class;
+        return IdResult.class;
     }
 
     public static class Builder implements ApiRequestBuilder<AddEntryCommentRequest> {
@@ -59,10 +59,14 @@ public final class AddEntryCommentRequest extends AbstractRequest<EntryOperation
         private String embedUrl;
         private File embedFile;
 
-        public Builder(String userKey, int entryId, String body) {
-            this.body = body;
+        public Builder(String userKey, int entryId) {
             this.entryId = entryId;
             this.userKey = userKey;
+        }
+
+        public Builder setBody(String body) {
+            this.body = body;
+            return this;
         }
 
         public Builder setEmbedUrl(String embedUrl) {

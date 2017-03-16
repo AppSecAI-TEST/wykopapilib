@@ -1,4 +1,4 @@
-package wykopapi.api.request.entries;
+package wykopapi.api.request.comments;
 
 import okhttp3.HttpUrl;
 import okhttp3.Request;
@@ -8,20 +8,20 @@ import wykopapi.api.request.ApiRequestBuilder;
 
 import java.lang.reflect.Type;
 
-public final class DeleteEntryRequest extends AbstractRequest<IdResult> {
+public class DeleteCommentRequest extends AbstractRequest<IdResult> {
     private final String userKey;
-    private final int entryId;
+    private final int commentId;
 
-    private DeleteEntryRequest(String userKey, int entryId) {
+    private DeleteCommentRequest(String userKey, int commentId) {
         this.userKey = userKey;
-        this.entryId = entryId;
+        this.commentId = commentId;
     }
 
     @Override
     public Request getRequest() {
         HttpUrl url = newUrlBuilder()
-                .addPathSegment("entries").addPathSegment("delete")
-                .addEncodedPathSegment(String.valueOf(entryId))
+                .addPathSegment("comments").addPathSegment("delete")
+                .addEncodedPathSegment(String.valueOf(commentId))
                 .addPathSegment("userkey").addEncodedPathSegment(userKey)
                 .build();
 
@@ -35,18 +35,18 @@ public final class DeleteEntryRequest extends AbstractRequest<IdResult> {
         return IdResult.class;
     }
 
-    public static class Builder implements ApiRequestBuilder<DeleteEntryRequest> {
+    public static class Builder implements ApiRequestBuilder<DeleteCommentRequest> {
         private String userKey;
-        private int entryId;
+        private int commentId;
 
-        public Builder(String userKey, int entryId) {
+        public Builder(String userKey, int commentId) {
             this.userKey = userKey;
-            this.entryId = entryId;
+            this.commentId = commentId;
         }
 
         @Override
-        public DeleteEntryRequest build() {
-            return new DeleteEntryRequest(userKey, entryId);
+        public DeleteCommentRequest build() {
+            return new DeleteCommentRequest(userKey, commentId);
         }
     }
 }

@@ -1,6 +1,6 @@
 package wykopapi.examples;
 
-import wykopapi.api.dto.EntryOperation;
+import wykopapi.api.dto.IdResult;
 import wykopapi.api.dto.Profile;
 import wykopapi.api.executor.RequestExecutor;
 import wykopapi.api.properties.FilePropertiesService;
@@ -22,18 +22,18 @@ public class AddEntryExample {
         Profile profile = executor.execute(loginRequest)
                 .orElseThrow(RuntimeException::new);
 
-        AddEntryRequest addEntryRequest = new AddEntryRequest
-                .Builder(profile.getUserkey(), "słucham psa jak gra")
+        AddEntryRequest addEntryRequest = new AddEntryRequest.Builder(profile.getUserkey())
+                .setBody("slucham psa jak gra")
                 .setEmbedFile(new File("src/main/resources/dogpiano.jpg"))
                 .build();
-        EntryOperation entryOperation = executor.execute(addEntryRequest)
+        IdResult idResult = executor.execute(addEntryRequest)
                 .ifSuccess(e -> System.out.println(e.getId()))
                 .ifError(System.out::println)
                 .get();
 
         AddEntryCommentRequest addEntryCommentRequest = new AddEntryCommentRequest
-                .Builder(profile.getUserkey(), entryOperation.getId(),
-                "@" + profile.getLogin() + ": ja też xd")
+                .Builder(profile.getUserkey(), idResult.getId())
+                .setBody("@" + profile.getLogin() + ": ja też xd")
                 .setEmbedFile(new File("src/main/resources/dogpiano.jpg"))
                 .build();
 

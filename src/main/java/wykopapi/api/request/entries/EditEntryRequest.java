@@ -2,14 +2,15 @@ package wykopapi.api.request.entries;
 
 import okhttp3.HttpUrl;
 import okhttp3.Request;
-import wykopapi.api.dto.EntryOperation;
+import wykopapi.api.dto.IdResult;
 import wykopapi.api.request.AbstractRequest;
 import wykopapi.api.request.ApiRequestBuilder;
 
 import java.lang.reflect.Type;
 import java.util.Collections;
 
-public final class EditEntryRequest extends AbstractRequest<EntryOperation> {
+// TODO check if its possible to change embed url/file
+public final class EditEntryRequest extends AbstractRequest<IdResult> {
     private final String userKey;
     private final String body;
     private final int entryId;
@@ -35,7 +36,7 @@ public final class EditEntryRequest extends AbstractRequest<EntryOperation> {
 
     @Override
     public Type getReturnType() {
-        return EntryOperation.class;
+        return IdResult.class;
     }
 
     public static class Builder implements ApiRequestBuilder<EditEntryRequest> {

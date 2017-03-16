@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public final class EntryOperation {
+public final class IdResult {
     private Integer id;
 }

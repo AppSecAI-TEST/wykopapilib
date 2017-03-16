@@ -1,4 +1,4 @@
-package wykopapi.api.request.entries;
+package wykopapi.api.request.comments;
 
 import okhttp3.HttpUrl;
 import okhttp3.Request;
@@ -10,15 +10,13 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 
 // TODO check if its possible to change embed url/file
-public final class EditEntryCommentRequest extends AbstractRequest<IdResult> {
+public class EditCommentRequest extends AbstractRequest<IdResult> {
     private final String userKey;
-    private final int entryId;
     private final int commentId;
     private final String body;
 
-    private EditEntryCommentRequest(String userKey, int entryId, int commentId, String body) {
+    private EditCommentRequest(String userKey, int commentId, String body) {
         this.userKey = userKey;
-        this.entryId = entryId;
         this.commentId = commentId;
         this.body = body;
     }
@@ -26,9 +24,9 @@ public final class EditEntryCommentRequest extends AbstractRequest<IdResult> {
     @Override
     public Request getRequest() {
         HttpUrl url = newUrlBuilder()
-                .addPathSegment("entries").addPathSegment("editcomment")
-                .addEncodedPathSegment(String.valueOf(entryId)).addEncodedPathSegment(String.valueOf(commentId))
-                .addPathSegment("userkey").addPathSegment(userKey)
+                .addPathSegment("comments").addPathSegment("edit")
+                .addEncodedPathSegment(String.valueOf(commentId))
+                .addPathSegment("userkey").addEncodedPathSegment(userKey)
                 .build();
 
         return new Request.Builder()
@@ -41,22 +39,20 @@ public final class EditEntryCommentRequest extends AbstractRequest<IdResult> {
         return IdResult.class;
     }
 
-    public static class Builder implements ApiRequestBuilder<EditEntryCommentRequest> {
+    public static class Builder implements ApiRequestBuilder<EditCommentRequest> {
         private String userKey;
-        private int entryId;
         private int commentId;
         private String body;
 
-        public Builder(String userKey, int entryId, int commentId, String body) {
+        public Builder(String userKey, int commentId, String body) {
             this.userKey = userKey;
-            this.entryId = entryId;
             this.commentId = commentId;
             this.body = body;
         }
 
         @Override
-        public EditEntryCommentRequest build() {
-            return new EditEntryCommentRequest(userKey, entryId, commentId, body);
+        public EditCommentRequest build() {
+            return new EditCommentRequest(userKey, commentId, body);
         }
     }
 }

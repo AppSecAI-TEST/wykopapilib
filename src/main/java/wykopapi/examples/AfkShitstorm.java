@@ -1,7 +1,5 @@
 package wykopapi.examples;
 
-import wykopapi.api.dto.Entry;
-import wykopapi.api.dto.EntryOperation;
 import wykopapi.api.dto.Profile;
 import wykopapi.api.executor.RequestExecutor;
 import wykopapi.api.properties.FilePropertiesService;
@@ -63,7 +61,8 @@ public class AfkShitstorm {
             TimeUnit.MINUTES.sleep(minutes);
 
             AddEntryRequest addEntryRequest = new AddEntryRequest
-                    .Builder(profile.getUserkey(), texts[text])
+                    .Builder(profile.getUserkey())
+                    .setBody(texts[text])
                     .build();
 
             executor.execute(addEntryRequest)

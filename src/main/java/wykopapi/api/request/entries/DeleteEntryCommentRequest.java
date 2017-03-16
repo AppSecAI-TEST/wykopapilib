@@ -2,13 +2,13 @@ package wykopapi.api.request.entries;
 
 import okhttp3.HttpUrl;
 import okhttp3.Request;
-import wykopapi.api.dto.EntryOperation;
+import wykopapi.api.dto.IdResult;
 import wykopapi.api.request.AbstractRequest;
 import wykopapi.api.request.ApiRequestBuilder;
 
 import java.lang.reflect.Type;
 
-public final class DeleteEntryCommentRequest extends AbstractRequest<EntryOperation> {
+public final class DeleteEntryCommentRequest extends AbstractRequest<IdResult> {
     private final String userKey;
     private final int entryId;
     private final int commentId;
@@ -34,7 +34,7 @@ public final class DeleteEntryCommentRequest extends AbstractRequest<EntryOperat
 
     @Override
     public Type getReturnType() {
-        return EntryOperation.class;
+        return IdResult.class;
     }
 
     public static class Builder implements ApiRequestBuilder<DeleteEntryCommentRequest> {
