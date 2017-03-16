@@ -13,7 +13,7 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AddCommentRequest extends AbstractRequest<IdResult> {
+public final class AddCommentRequest extends AbstractRequest<IdResult> {
     private final String userKey;
     private final int linkId;
     private final int commentId;

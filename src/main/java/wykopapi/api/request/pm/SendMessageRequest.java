@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 // TODO check return type, you never know what wykop api returns
-public class SendMessageRequest extends AbstractRequest<Boolean> {
+public final class SendMessageRequest extends AbstractRequest<Boolean> {
     private final String userKey;
     private final String userName;
     private final String body;

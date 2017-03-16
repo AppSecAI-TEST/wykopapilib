@@ -8,7 +8,7 @@ import wykopapi.api.request.ApiRequestBuilder;
 import java.lang.reflect.Type;
 
 // TODO check return type
-public class DeleteConversationRequest extends AbstractRequest<Boolean> {
+public final class DeleteConversationRequest extends AbstractRequest<Boolean> {
     private final String userKey;
     private final String userName;
 

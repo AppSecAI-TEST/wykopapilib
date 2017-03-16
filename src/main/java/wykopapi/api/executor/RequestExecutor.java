@@ -21,8 +21,12 @@ public class RequestExecutor {
     private final Gson gson;
 
     public RequestExecutor(PropertiesService propertiesService) {
+        this(propertiesService.getAppKey(), propertiesService.getSecret());
+    }
+
+    public RequestExecutor(String appKey, String secret) {
         this.httpClient = new OkHttpClient.Builder()
-                .addInterceptor(new AuthInterceptor(propertiesService.getAppKey(), propertiesService.getSecret()))
+                .addInterceptor(new AuthInterceptor(appKey, secret))
                 .build();
         this.gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeJsonAdapter())

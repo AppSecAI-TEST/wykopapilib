@@ -10,7 +10,7 @@ import wykopapi.api.request.ApiRequestBuilder;
 import java.lang.reflect.Type;
 import java.util.List;
 
-public class ListConversationsRequest extends AbstractRequest<List<Conversation>> {
+public final class ListConversationsRequest extends AbstractRequest<List<Conversation>> {
     private final String userKey;
 
     private ListConversationsRequest(String userKey) {

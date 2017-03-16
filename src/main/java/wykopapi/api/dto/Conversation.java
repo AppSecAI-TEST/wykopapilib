@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Conversation {
+public final class Conversation {
     private LocalDateTime lastUpdate;
     private String authorAvatar;
     private String authorAvatarBig;

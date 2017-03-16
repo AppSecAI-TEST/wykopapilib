@@ -10,7 +10,7 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 
 // TODO check if its possible to change embed url/file
-public class EditCommentRequest extends AbstractRequest<IdResult> {
+public final class EditCommentRequest extends AbstractRequest<IdResult> {
     private final String userKey;
     private final int commentId;
     private final String body;

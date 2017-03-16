@@ -8,7 +8,7 @@ import wykopapi.api.request.ApiRequestBuilder;
 import java.lang.reflect.Type;
 
 // TODO proper return type
-public class MinusCommentRequest extends AbstractRequest<String> {
+public final class MinusCommentRequest extends AbstractRequest<String> {
     private final String userKey;
     private final int linkId;
     private final int commentId;

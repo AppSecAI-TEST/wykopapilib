@@ -10,7 +10,7 @@ import wykopapi.api.request.ApiRequestBuilder;
 import java.lang.reflect.Type;
 import java.util.List;
 
-public class TagsIndexRequest extends AbstractRequest<List<Tag>> {
+public final class TagsIndexRequest extends AbstractRequest<List<Tag>> {
     private TagsIndexRequest() {
     }
 

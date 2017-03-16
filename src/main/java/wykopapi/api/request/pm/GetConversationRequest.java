@@ -10,7 +10,7 @@ import wykopapi.api.request.ApiRequestBuilder;
 import java.lang.reflect.Type;
 import java.util.List;
 
-public class GetConversationRequest extends AbstractRequest<List<PmMessage>> {
+public final class GetConversationRequest extends AbstractRequest<List<PmMessage>> {
     private final String userKey;
     private final String userName;
 
