@@ -18,12 +18,16 @@ public class FormParameterExtractorTest {
 
     @Test
     public void extract() throws Exception {
+        // given
         FormBody formBody = new FormBody.Builder()
                 .add("key1", "value1")
                 .add("key2", "value2")
                 .build();
 
+        // when
         Map<String, String> parameters = parameterExtractor.extract(formBody);
+
+        // then
         assertEquals(2, parameters.size());
         assertEquals("value1", parameters.get("key1"));
         assertEquals("value2", parameters.get("key2"));

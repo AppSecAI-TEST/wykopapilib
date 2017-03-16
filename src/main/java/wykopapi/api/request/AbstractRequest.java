@@ -6,7 +6,7 @@ import java.io.File;
 import java.util.Map;
 
 public abstract class AbstractRequest<T> implements ApiRequest<T> {
-    private static final String SCHEME = "http";
+    private static final String SCHEME = "https";
     private static final String HOST = "a.wykop.pl";
 
     protected AbstractRequest() {

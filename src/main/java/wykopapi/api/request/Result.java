@@ -63,19 +63,4 @@ public final class Result<T> {
         if (isError()) consumer.accept(error);
         return this;
     }
-
-    public void consume(Consumer<T> ifSuccess, Consumer<ErrorInfo> ifError) {
-        if (isSuccess()) ifSuccess.accept(value);
-        else ifError.accept(error);
-    }
-
-    public int getErrorCode() {
-        return error.getCode();
-    }
-
-    public String getErrorMessage() {
-        return error.getMessage();
-    }
-
-
 }

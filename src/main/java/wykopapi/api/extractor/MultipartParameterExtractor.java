@@ -9,7 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 class MultipartParameterExtractor implements ParameterExtractor<MultipartBody> {
-    private static final Pattern pattern = Pattern.compile(" name=\"(\\p{L}+)\"");
+    private static final Pattern pattern = Pattern.compile(" name=\"(.*)\"");
     @Override
     public Map<String, String> extract(MultipartBody requestBody) {
         Map<String, String> parameters = new HashMap<>();

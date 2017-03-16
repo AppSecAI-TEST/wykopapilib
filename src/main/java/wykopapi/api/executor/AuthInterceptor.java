@@ -34,14 +34,12 @@ final class AuthInterceptor implements Interceptor {
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(secret).append(url);
-        Joiner.on(',').appendTo(stringBuilder, parameters
-                .entrySet().stream()
+        Joiner.on(',').appendTo(stringBuilder, parameters.entrySet().stream()
                 .sorted(Comparator.comparing(Map.Entry::getKey))
                 .map(Map.Entry::getValue).collect(Collectors.toList()));
 
         Request request = chain.request().newBuilder()
-                .url(url)
-                .addHeader("apisign", requestUtils.getMD5(stringBuilder.toString()))
+                .url(url).addHeader("apisign", requestUtils.getMD5(stringBuilder.toString()))
                 .build();
 
         return chain.proceed(request);
