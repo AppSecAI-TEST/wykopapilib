@@ -42,7 +42,7 @@ public class ExtractorTest {
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("formkey", "formvalue")
                 .addFormDataPart("formkey2", "formvalue2")
-                .addFormDataPart("embed", "filename.jpg", RequestBody.create(MediaType.parse("image/jpeg"), new File("dogpiano.jpg")))
+                .addFormDataPart("embed", "filename.jpg", RequestBody.create(MediaType.parse("image/jpeg"), new File("file.jpg")))
                 .build();
 
         Map<String, String> parameters = extractor.extract(requestBody);
