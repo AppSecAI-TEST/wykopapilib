@@ -28,11 +28,28 @@ public abstract class AbstractRequest<T> implements ApiRequest<T> {
     }
 
     protected MultipartBody createMultipartBody(Map<String, String> params, File file) {
+        String extension = file.getName().substring(file.getName().lastIndexOf('.') + 1);
+        MediaType mediaType;
+        switch (extension) {
+            case "jpg":
+            case "jpeg":
+                mediaType = MediaType.parse("image/jpeg");
+                break;
+            case "png":
+                mediaType = MediaType.parse("image/png");
+                break;
+            case "gif":
+                mediaType = MediaType.parse("image/gif");
+                break;
+            default:
+                mediaType = null;
+                break;
+        }
         MultipartBody.Builder bodyBuilder = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM);
         params.forEach(bodyBuilder::addFormDataPart);
-        bodyBuilder.addFormDataPart("embed", "image.jpg",
-                RequestBody.create(MediaType.parse("image/jpeg"), file));
+        bodyBuilder.addFormDataPart("embed", file.getName(),
+                RequestBody.create(mediaType, file));
 
         return bodyBuilder.build();
     }
