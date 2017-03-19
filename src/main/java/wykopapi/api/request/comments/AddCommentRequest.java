@@ -27,16 +27,14 @@ public final class AddCommentRequest implements ApiRequest<IdResult> {
 
     @Override
     public Request getRequest() {
-        ApiRequestBuilder requestBuilder = new ApiRequestBuilder("comments", "add")
+        return new ApiRequestBuilder("comments", "add")
                 .addMethodParam(String.valueOf(linkId))
                 .addMethodParam(String.valueOf(commentId)) // TODO what if comment id is not set
-                .addApiParam("userkey", userKey);
-
-        if (!Strings.isNullOrEmpty(body)) requestBuilder.addPostParam("body", body);
-        if (!Strings.isNullOrEmpty(embedUrl)) requestBuilder.addPostParam("embed", embedUrl);
-        if (embedFile != null) requestBuilder.setEmbedFile(embedFile);
-
-        return requestBuilder.build();
+                .addApiParam("userkey", userKey)
+                .addPostParam("body", body, !Strings.isNullOrEmpty(body))
+                .addPostParam("embed", embedUrl, !Strings.isNullOrEmpty(embedUrl))
+                .setEmbedFile(embedFile)
+                .build();
     }
 
     @Override

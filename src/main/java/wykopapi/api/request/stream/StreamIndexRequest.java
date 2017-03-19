@@ -1,5 +1,6 @@
 package wykopapi.api.request.stream;
 
+import com.google.common.base.Strings;
 import com.google.gson.reflect.TypeToken;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -13,15 +14,17 @@ import java.util.List;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class StreamIndexRequest implements ApiRequest<List<Entry>> {
+    private final String userKey;
     private final int page;
     private final boolean clearOutput;
 
     @Override
     public Request getRequest() {
-        ApiRequestBuilder requestBuilder = new ApiRequestBuilder("stream", "index")
-                .addApiParam("page", String.valueOf(page));
-        if (clearOutput) requestBuilder.addApiParam("output", "clear");
-        return requestBuilder.build();
+        return new ApiRequestBuilder("stream", "index")
+                .addApiParam("page", String.valueOf(page))
+                .addApiParam("userkey", userKey, !Strings.isNullOrEmpty(userKey))
+                .addApiParam("output", "clear", clearOutput)
+                .build();
     }
 
     @Override
@@ -35,6 +38,7 @@ public final class StreamIndexRequest implements ApiRequest<List<Entry>> {
 
     public static class StreamIndexRequestBuilder {
         private int page;
+        private String userKey;
         private boolean clearOutput;
 
         private StreamIndexRequestBuilder() {
@@ -51,8 +55,13 @@ public final class StreamIndexRequest implements ApiRequest<List<Entry>> {
             return this;
         }
 
+        public StreamIndexRequestBuilder userKey(String userKey) {
+            this.userKey = userKey;
+            return this;
+        }
+
         public StreamIndexRequest build() {
-            return new StreamIndexRequest(page, clearOutput);
+            return new StreamIndexRequest(userKey, page, clearOutput);
         }
     }
 }

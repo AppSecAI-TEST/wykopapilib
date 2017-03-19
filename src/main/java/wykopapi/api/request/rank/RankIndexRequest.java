@@ -1,5 +1,6 @@
 package wykopapi.api.request.rank;
 
+import com.google.common.base.Strings;
 import com.google.gson.reflect.TypeToken;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import java.util.Objects;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class RankIndexRequest implements ApiRequest<List<Profile>> {
     private final RankOrder order;
+    private final String userKey;
     private final int page;
 
     @Override
@@ -23,6 +25,7 @@ public final class RankIndexRequest implements ApiRequest<List<Profile>> {
         return new ApiRequestBuilder("rank", "index")
                 .addMethodParam(order.toString())
                 .addApiParam("page", String.valueOf(page))
+                .addApiParam("userKey", userKey, !Strings.isNullOrEmpty(userKey))
                 .build();
     }
 
@@ -37,6 +40,7 @@ public final class RankIndexRequest implements ApiRequest<List<Profile>> {
 
     public static class RankIndexRequestBuilder {
         private RankOrder order;
+        private String userKey;
         private int page;
 
         private RankIndexRequestBuilder() {
@@ -50,13 +54,18 @@ public final class RankIndexRequest implements ApiRequest<List<Profile>> {
             return this;
         }
 
+        private RankIndexRequestBuilder userKey(String userKey) {
+            this.userKey = userKey;
+            return this;
+        }
+
         public RankIndexRequestBuilder page(int page) {
             this.page = page > 0 ? page : 1;
             return this;
         }
 
         public RankIndexRequest build() {
-            return new RankIndexRequest(order, page);
+            return new RankIndexRequest(order, userKey, page);
         }
     }
 }

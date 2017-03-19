@@ -43,10 +43,10 @@ public final class RequestExecutor {
                     ? Result.error(gson .fromJson(json, Error.class).getError())
                     : Result.success(gson.fromJson(json, request.getReturnType()));
         } catch (IOException e) {
-            logger.error("Request failed: " + e.getMessage());
+            //logger.error("Request failed: " + e.getMessage());
             return Result.error(new ErrorInfo(-1, "Request failed"));
         } catch (JsonIOException | JsonSyntaxException e) {
-            logger.error("Json parsing failed for json: " + json);
+            //logger.error("Json parsing failed for json: " + json);
             return Result.error(new ErrorInfo(-2, "Json parsing failed"));
         }
     }

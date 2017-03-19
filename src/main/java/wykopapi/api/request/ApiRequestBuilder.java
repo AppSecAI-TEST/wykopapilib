@@ -39,6 +39,11 @@ public final class ApiRequestBuilder {
         return this;
     }
 
+    public ApiRequestBuilder addMethodParam(@NotNull String value, boolean condition) {
+        if (condition) addMethodParam(value);
+        return this;
+    }
+
     public ApiRequestBuilder addApiParam(@NotNull String key, @NotNull String value) {
         if (Strings.isNullOrEmpty(key) || Strings.isNullOrEmpty(value)) {
             throw new IllegalArgumentException("Parameter key or value cannot be null or empty");
@@ -47,11 +52,21 @@ public final class ApiRequestBuilder {
         return this;
     }
 
+    public ApiRequestBuilder addApiParam(@NotNull String key, @NotNull String value, boolean condition) {
+        if (condition) addApiParam(key, value);
+        return this;
+    }
+
     public ApiRequestBuilder addPostParam(@NotNull String key, @NotNull String value) {
         if (Strings.isNullOrEmpty(key) || Strings.isNullOrEmpty(value)) {
             throw new IllegalArgumentException("Parameter key or value cannot be null or empty");
         }
         postParams.put(key, value);
+        return this;
+    }
+
+    public ApiRequestBuilder addPostParam(@NotNull String key, @NotNull String value, boolean condition) {
+        if (condition) addPostParam(key, value);
         return this;
     }
 

@@ -1,4 +1,6 @@
 package wykopapi.api.request.link;
 
-public class LinkCommentsRequest {
+import wykopapi.api.request.ApiRequest;
+
+public class LinkCommentsRequest  {
 }

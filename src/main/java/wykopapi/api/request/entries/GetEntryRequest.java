@@ -16,11 +16,10 @@ public final class GetEntryRequest implements ApiRequest<Entry> {
 
     @Override
     public Request getRequest() {
-        ApiRequestBuilder requestBuilder = new ApiRequestBuilder("entries", "index")
-                .addMethodParam(String.valueOf(entryId));
-        if (clearOutput) requestBuilder.addApiParam("output", "clear");
-
-        return requestBuilder.build();
+        return new ApiRequestBuilder("entries", "index")
+                .addMethodParam(String.valueOf(entryId))
+                .addApiParam("output", "clear", clearOutput)
+                .build();
     }
 
     @Override

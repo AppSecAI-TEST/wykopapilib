@@ -6,7 +6,9 @@ import wykopapi.api.properties.FilePropertiesService;
 import wykopapi.api.properties.PropertiesService;
 import wykopapi.api.request.entries.FavoriteEntryRequest;
 import wykopapi.api.request.entries.VoteEntryRequest;
+import wykopapi.api.request.rank.RankIndexRequest;
 import wykopapi.api.request.stream.StreamIndexRequest;
+import wykopapi.api.request.tag.TagIndexRequest;
 import wykopapi.api.request.tags.TagsIndexRequest;
 import wykopapi.api.request.user.LoginRequest;
 
@@ -24,14 +26,17 @@ public class VoteBot {
                 .orElseThrow(RuntimeException::new)
                 .getUserkey();
 
-        StreamIndexRequest streamIndexRequest = StreamIndexRequest.builder().build();
-        List<Entry> entries = executor.execute(streamIndexRequest).get();
+        RankIndexRequest request = RankIndexRequest.builder().build();
+        executor.execute(request).ifSuccess(System.out::println);
 
-        entries.forEach(e -> {
-            VoteEntryRequest voteEntryRequest = VoteEntryRequest.builder(userKey, e.getId()).build();
-            executor.execute(voteEntryRequest)
-                    .ifSuccess(System.out::println)
-                    .ifError(System.out::println);
-        });
+//        StreamIndexRequest streamIndexRequest = StreamIndexRequest.builder().build();
+//        List<Entry> entries = executor.execute(streamIndexRequest).get();
+//
+//        entries.forEach(e -> {
+//            VoteEntryRequest voteEntryRequest = VoteEntryRequest.builder(userKey, e.getId()).build();
+//            executor.execute(voteEntryRequest)
+//                    .ifSuccess(System.out::println)
+//                    .ifError(System.out::println);
+//        });
     }
 }

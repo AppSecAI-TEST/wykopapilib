@@ -23,14 +23,13 @@ public final class SendMessageRequest implements ApiRequest<Boolean> {
 
     @Override
     public Request getRequest() {
-        ApiRequestBuilder requestBuilder = new ApiRequestBuilder("pm", "sendmessage")
+        return new ApiRequestBuilder("pm", "sendmessage")
                 .addMethodParam(userName)
-                .addApiParam("userkey", userKey);
-        if (!Strings.isNullOrEmpty(body)) requestBuilder.addPostParam("body", body);
-        if (!Strings.isNullOrEmpty(embedUrl)) requestBuilder.addPostParam("embed", embedUrl);
-        if (embedFile != null) requestBuilder.setEmbedFile(embedFile);
-
-        return requestBuilder.build();
+                .addApiParam("userkey", userKey)
+                .addPostParam("body", body, !Strings.isNullOrEmpty(body))
+                .addPostParam("embed", embedUrl, !Strings.isNullOrEmpty(embedUrl))
+                .setEmbedFile(embedFile)
+                .build();
     }
 
     @Override

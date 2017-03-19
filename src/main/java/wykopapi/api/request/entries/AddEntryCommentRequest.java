@@ -22,14 +22,13 @@ public final class AddEntryCommentRequest implements ApiRequest<IdResult> {
 
     @Override
     public Request getRequest() {
-        ApiRequestBuilder requestBuilder = new ApiRequestBuilder("entries", "addcomment")
+        return new ApiRequestBuilder("entries", "addcomment")
                 .addMethodParam(String.valueOf(entryId))
-                .addApiParam("userkey", userKey);
-        if (!Strings.isNullOrEmpty(body)) requestBuilder.addPostParam("body", body);
-        if (!Strings.isNullOrEmpty(embedUrl)) requestBuilder.addPostParam("embed", embedUrl);
-        if (embedFile != null) requestBuilder.setEmbedFile(embedFile);
-
-        return requestBuilder.build();
+                .addApiParam("userkey", userKey)
+                .addPostParam("body", body, !Strings.isNullOrEmpty(body))
+                .addPostParam("embed", embedUrl, !Strings.isNullOrEmpty(embedUrl))
+                .setEmbedFile(embedFile)
+                .build();
     }
 
     @Override
