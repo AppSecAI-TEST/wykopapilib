@@ -1,34 +1,26 @@
 package wykopapi.api.request.entries;
 
-import okhttp3.HttpUrl;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import okhttp3.Request;
 import wykopapi.api.dto.Entry;
-import wykopapi.api.request.AbstractRequest;
+import wykopapi.api.request.ApiRequest;
 import wykopapi.api.request.ApiRequestBuilder;
 
 import java.lang.reflect.Type;
 
-public final class GetEntryRequest extends AbstractRequest<Entry> {
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class GetEntryRequest implements ApiRequest<Entry> {
     private final int entryId;
     private final boolean clearOutput;
 
-    private GetEntryRequest(int entryId, boolean clearOutput) {
-        this.entryId = entryId;
-        this.clearOutput = clearOutput;
-    }
-
     @Override
     public Request getRequest() {
-        HttpUrl.Builder urlBuilder = newUrlBuilder()
-                .addPathSegment("entries").addPathSegment("index")
-                .addEncodedPathSegment(String.valueOf(entryId));
-        if (clearOutput) {
-            urlBuilder.addPathSegment("output").addPathSegment("clear");
-        }
+        ApiRequestBuilder requestBuilder = new ApiRequestBuilder("entries", "index")
+                .addMethodParam(String.valueOf(entryId));
+        if (clearOutput) requestBuilder.addApiParam("output", "clear");
 
-        return new Request.Builder()
-                .url(urlBuilder.build()).get()
-                .build();
+        return requestBuilder.build();
     }
 
     @Override
@@ -36,20 +28,26 @@ public final class GetEntryRequest extends AbstractRequest<Entry> {
         return Entry.class;
     }
 
-    public static class Builder implements ApiRequestBuilder<GetEntryRequest> {
+    public static GetEntryRequestBuilder builder(int entryId) {
+        return new GetEntryRequestBuilder(entryId);
+    }
+
+    public static class GetEntryRequestBuilder {
         private int entryId;
         private boolean clearOutput;
 
-        public Builder(int entryId) {
+        private GetEntryRequestBuilder(int entryId) {
+            if (entryId < 0) {
+                throw new IllegalArgumentException("Parameter cannot be negative");
+            }
             this.entryId = entryId;
         }
 
-        public Builder setClearOutput(boolean clearOutput) {
+        public GetEntryRequestBuilder clearOutput(boolean clearOutput) {
             this.clearOutput = clearOutput;
             return this;
         }
 
-        @Override
         public GetEntryRequest build() {
             return new GetEntryRequest(entryId, clearOutput);
         }

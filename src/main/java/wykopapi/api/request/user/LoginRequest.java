@@ -1,9 +1,10 @@
 package wykopapi.api.request.user;
 
-import okhttp3.HttpUrl;
+import com.google.common.base.Strings;
 import okhttp3.Request;
-import wykopapi.api.request.AbstractRequest;
+import org.jetbrains.annotations.NotNull;
 import wykopapi.api.dto.Profile;
+import wykopapi.api.request.ApiRequest;
 import wykopapi.api.request.ApiRequestBuilder;
 
 import java.lang.reflect.Type;
@@ -11,7 +12,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class LoginRequest extends AbstractRequest<Profile> {
+public final class LoginRequest implements ApiRequest<Profile> {
     private final Map<String, String> authParams;
 
     private LoginRequest(Map<String, String> authParams) {
@@ -20,13 +21,9 @@ public final class LoginRequest extends AbstractRequest<Profile> {
 
     @Override
     public Request getRequest() {
-        HttpUrl url = newUrlBuilder()
-                .addPathSegment("user").addPathSegment("login")
-                .build();
-
-        return new Request.Builder()
-                .url(url).post(createBodyFromParams(authParams))
-                .build();
+        ApiRequestBuilder requestBuilder = new ApiRequestBuilder("user", "login");
+        authParams.forEach(requestBuilder::addPostParam);
+        return requestBuilder.build();
     }
 
     @Override
@@ -34,20 +31,32 @@ public final class LoginRequest extends AbstractRequest<Profile> {
         return Profile.class;
     }
 
-    public static class Builder implements ApiRequestBuilder<LoginRequest> {
+    public static LoginRequestBuilder builder(@NotNull String accountKey) {
+        return new LoginRequestBuilder()
+                .addParameter("accountkey", accountKey);
+    }
+
+    public static LoginRequestBuilder builder(@NotNull String username, @NotNull String password) {
+        return new LoginRequestBuilder()
+                .addParameter("username", username)
+                .addParameter("password", password);
+    }
+
+    public static class LoginRequestBuilder {
         private final Map<String, String> params;
 
-        public Builder(String accountKey) {
-            this.params = Collections.singletonMap("accountkey", accountKey);
-        }
-
-        public Builder(String username, String password) {
+        private LoginRequestBuilder() {
             this.params = new HashMap<>();
-            params.put("username", username);
-            params.put("password", password);
         }
 
-        @Override
+        private LoginRequestBuilder addParameter(@NotNull String key, @NotNull String value) {
+            if (Strings.isNullOrEmpty(key) || Strings.isNullOrEmpty(value)) {
+                throw new IllegalArgumentException("Parameter cannot be null or empty");
+            }
+            params.put(key, value);
+            return this;
+        }
+
         public LoginRequest build() {
             return new LoginRequest(Collections.unmodifiableMap(params));
         }

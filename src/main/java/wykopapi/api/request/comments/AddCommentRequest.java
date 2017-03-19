@@ -1,11 +1,14 @@
 package wykopapi.api.request.comments;
 
 import com.google.common.base.Strings;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import org.jetbrains.annotations.NotNull;
 import wykopapi.api.dto.IdResult;
-import wykopapi.api.request.AbstractRequest;
+import wykopapi.api.request.ApiRequest;
 import wykopapi.api.request.ApiRequestBuilder;
 
 import java.io.File;
@@ -13,7 +16,8 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class AddCommentRequest extends AbstractRequest<IdResult> {
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class AddCommentRequest implements ApiRequest<IdResult> {
     private final String userKey;
     private final int linkId;
     private final int commentId;
@@ -21,34 +25,18 @@ public final class AddCommentRequest extends AbstractRequest<IdResult> {
     private final String embedUrl;
     private final File embedFile;
 
-    private AddCommentRequest(String userKey, int linkId, int commentId, String body, String embedUrl, File embedFile) {
-        this.userKey = userKey;
-        this.linkId = linkId;
-        this.commentId = commentId;
-        this.body = body;
-        this.embedUrl = embedUrl;
-        this.embedFile = embedFile;
-    }
-
     @Override
     public Request getRequest() {
-        HttpUrl url = newUrlBuilder()
-                .addPathSegment("comments").addPathSegment("add")
-                .addEncodedPathSegment(String.valueOf(linkId)).addEncodedPathSegment(String.valueOf(commentId)) // TODO what if comment id is not set
-                .addPathSegment("userkey").addEncodedPathSegment(userKey)
-                .build();
+        ApiRequestBuilder requestBuilder = new ApiRequestBuilder("comments", "add")
+                .addMethodParam(String.valueOf(linkId))
+                .addMethodParam(String.valueOf(commentId)) // TODO what if comment id is not set
+                .addApiParam("userkey", userKey);
 
-        Map<String, String> parameters = new HashMap<>();
-        if (!Strings.isNullOrEmpty(body)) parameters.put("body", body);
-        if (!Strings.isNullOrEmpty(embedUrl)) parameters.put("embed", embedUrl);
+        if (!Strings.isNullOrEmpty(body)) requestBuilder.addPostParam("body", body);
+        if (!Strings.isNullOrEmpty(embedUrl)) requestBuilder.addPostParam("embed", embedUrl);
+        if (embedFile != null) requestBuilder.setEmbedFile(embedFile);
 
-        RequestBody requestBody = embedFile == null
-                ? createBodyFromParams(parameters)
-                : createMultipartBody(parameters, embedFile);
-
-        return new Request.Builder()
-                .url(url).post(requestBody)
-                .build();
+        return requestBuilder.build();
     }
 
     @Override
@@ -56,7 +44,11 @@ public final class AddCommentRequest extends AbstractRequest<IdResult> {
         return IdResult.class;
     }
 
-    public static class Builder implements ApiRequestBuilder<AddCommentRequest> {
+    public static AddCommentRequestBuilder builder(@NotNull String userKey, int linkId) {
+        return new AddCommentRequestBuilder(userKey, linkId);
+    }
+
+    public static class AddCommentRequestBuilder {
         private String userKey;
         private int linkId;
         private int commentId;
@@ -64,34 +56,42 @@ public final class AddCommentRequest extends AbstractRequest<IdResult> {
         private String embedUrl;
         private File embedFile;
 
-        public Builder(String userKey, int linkId) {
+        private AddCommentRequestBuilder(@NotNull String userKey, int linkId) {
+            if (Strings.isNullOrEmpty(userKey)) {
+                throw new IllegalArgumentException("Parameter cannot be null or empty");
+            }
+            if (linkId < 0) {
+                throw new IllegalArgumentException("Parameter cannot be negative");
+            }
             this.userKey = userKey;
             this.linkId = linkId;
         }
 
-        public Builder setCommentId(int commentId) {
+        public AddCommentRequestBuilder commentId(int commentId) {
+            if (commentId < 0) {
+                throw new IllegalArgumentException("Parameter cannot be negative");
+            }
             this.commentId = commentId;
             return this;
         }
 
-        public Builder setBody(String body) {
+        public AddCommentRequestBuilder body(String body) {
             this.body = body;
             return this;
         }
 
-        public Builder setEmbedUrl(String embedUrl) {
+        public AddCommentRequestBuilder embedUrl(String embedUrl) {
             this.embedUrl = embedUrl;
             this.embedFile = null;
             return this;
         }
 
-        public Builder setEmbedFile(File embedFile) {
+        public AddCommentRequestBuilder embedFile(File embedFile) {
             this.embedFile = embedFile;
             this.embedUrl = null;
             return this;
         }
 
-        @Override
         public AddCommentRequest build() {
             return new AddCommentRequest(userKey, linkId, commentId, body, embedUrl, embedFile);
         }

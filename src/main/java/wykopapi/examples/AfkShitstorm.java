@@ -24,7 +24,7 @@ public class AfkShitstorm {
                 new FilePropertiesService("src/main/resources/application.properties");
         RequestExecutor executor = new RequestExecutor(propertiesService);
 
-        LoginRequest loginRequest = new LoginRequest.Builder(propertiesService.getAccountKey()).build();
+        LoginRequest loginRequest = LoginRequest.builder(propertiesService.getAccountKey()).build();
         Profile profile = executor.execute(loginRequest)
                 .orElseThrow(RuntimeException::new);
 
@@ -47,8 +47,8 @@ public class AfkShitstorm {
 
             if (entriesIds.size() > 0) {
                 entriesIds.forEach(id -> {
-                    GetEntryRequest getEntryRequest = new GetEntryRequest
-                            .Builder(id).build();
+                    GetEntryRequest getEntryRequest = GetEntryRequest
+                            .builder(id).build();
                     executor.execute(getEntryRequest)
                             .ifSuccess(entry -> {
                                 System.out.println("Wpis: " + entry.getBody());
@@ -60,9 +60,9 @@ public class AfkShitstorm {
 
             TimeUnit.MINUTES.sleep(minutes);
 
-            AddEntryRequest addEntryRequest = new AddEntryRequest
-                    .Builder(profile.getUserkey())
-                    .setBody(texts[text])
+            AddEntryRequest addEntryRequest = AddEntryRequest
+                    .builder(profile.getUserkey())
+                    .body(texts[text])
                     .build();
 
             executor.execute(addEntryRequest)

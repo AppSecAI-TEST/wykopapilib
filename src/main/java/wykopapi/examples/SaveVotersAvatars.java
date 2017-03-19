@@ -34,8 +34,8 @@ public class SaveVotersAvatars {
 
         System.out.println("Downloading entry data...");
 
-        GetEntryRequest getEntryRequest = new GetEntryRequest.Builder(entryId).setClearOutput(true).build();
-        Entry entry =executor.execute(getEntryRequest).orElseThrow(() -> new RuntimeException("Could not download entry"));
+        GetEntryRequest getEntryRequest = GetEntryRequest.builder(entryId).clearOutput(true).build();
+        Entry entry = executor.execute(getEntryRequest).orElseThrow(() -> new RuntimeException("Could not download entry"));
 
         System.out.println("Downloading images...");
 

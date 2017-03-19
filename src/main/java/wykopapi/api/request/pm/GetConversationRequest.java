@@ -1,34 +1,28 @@
 package wykopapi.api.request.pm;
 
+import com.google.common.base.Strings;
 import com.google.gson.reflect.TypeToken;
-import okhttp3.HttpUrl;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import okhttp3.Request;
+import org.jetbrains.annotations.NotNull;
 import wykopapi.api.dto.PmMessage;
-import wykopapi.api.request.AbstractRequest;
+import wykopapi.api.request.ApiRequest;
 import wykopapi.api.request.ApiRequestBuilder;
 
 import java.lang.reflect.Type;
 import java.util.List;
 
-public final class GetConversationRequest extends AbstractRequest<List<PmMessage>> {
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class GetConversationRequest implements ApiRequest<List<PmMessage>> {
     private final String userKey;
     private final String userName;
 
-    private GetConversationRequest(String userKey, String userName) {
-        this.userKey = userKey;
-        this.userName = userName;
-    }
-
     @Override
     public Request getRequest() {
-        HttpUrl url = newUrlBuilder()
-                .addPathSegment("pm").addPathSegment("conversation")
-                .addEncodedPathSegment(userName)
-                .addPathSegment("userkey").addEncodedPathSegment(userKey)
-                .build();
-
-        return new Request.Builder()
-                .url(url).get()
+        return new ApiRequestBuilder("pm", "conversation")
+                .addMethodParam(userName)
+                .addApiParam("userkey", userKey)
                 .build();
     }
 
@@ -37,16 +31,22 @@ public final class GetConversationRequest extends AbstractRequest<List<PmMessage
         return new TypeToken<List<PmMessage>>(){}.getType();
     }
 
-    public static class Builder implements ApiRequestBuilder<GetConversationRequest> {
+    public static GetConversationRequestBuilder builder(@NotNull String userKey, @NotNull String userName) {
+        return new GetConversationRequestBuilder(userKey, userName);
+    }
+
+    public static class GetConversationRequestBuilder {
         private String userKey;
         private String userName;
 
-        public Builder(String userKey, String userName) {
+        private GetConversationRequestBuilder(@NotNull String userKey, @NotNull String userName) {
+            if (Strings.isNullOrEmpty(userKey) || Strings.isNullOrEmpty(userName)) {
+                throw new IllegalArgumentException("Parameter cannot be null or empty");
+            }
             this.userKey = userKey;
             this.userName = userName;
         }
 
-        @Override
         public GetConversationRequest build() {
             return new GetConversationRequest(userKey, userName);
         }

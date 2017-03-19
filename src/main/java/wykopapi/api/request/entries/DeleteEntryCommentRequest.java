@@ -1,34 +1,28 @@
 package wykopapi.api.request.entries;
 
-import okhttp3.HttpUrl;
+import com.google.common.base.Strings;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import okhttp3.Request;
+import org.jetbrains.annotations.NotNull;
 import wykopapi.api.dto.IdResult;
-import wykopapi.api.request.AbstractRequest;
+import wykopapi.api.request.ApiRequest;
 import wykopapi.api.request.ApiRequestBuilder;
 
 import java.lang.reflect.Type;
 
-public final class DeleteEntryCommentRequest extends AbstractRequest<IdResult> {
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class DeleteEntryCommentRequest implements ApiRequest<IdResult> {
     private final String userKey;
     private final int entryId;
     private final int commentId;
 
-    private DeleteEntryCommentRequest(String userKey, int entryId, int commentId) {
-        this.userKey = userKey;
-        this.entryId = entryId;
-        this.commentId = commentId;
-    }
-
     @Override
     public Request getRequest() {
-        HttpUrl url = newUrlBuilder()
-                .addPathSegment("entries").addPathSegment("deletecomment")
-                .addEncodedPathSegment(String.valueOf(entryId)).addEncodedPathSegment(String.valueOf(commentId))
-                .addPathSegment("userkey").addEncodedPathSegment(userKey)
-                .build();
-
-        return new Request.Builder()
-                .url(url).get()
+        return new ApiRequestBuilder("entries", "deletecomment")
+                .addMethodParam(String.valueOf(entryId))
+                .addMethodParam(String.valueOf(commentId))
+                .addApiParam("userkey", userKey)
                 .build();
     }
 
@@ -37,18 +31,27 @@ public final class DeleteEntryCommentRequest extends AbstractRequest<IdResult> {
         return IdResult.class;
     }
 
-    public static class Builder implements ApiRequestBuilder<DeleteEntryCommentRequest> {
+    public static DeleteEntryCommentRequestBuilder builder(@NotNull String userKey, int entryId, int commentId) {
+        return new DeleteEntryCommentRequestBuilder(userKey, entryId, commentId);
+    }
+
+    public static class DeleteEntryCommentRequestBuilder {
         private String userKey;
         private int entryId;
         private int commentId;
 
-        public Builder(String userKey, int entryId, int commentId) {
+        private DeleteEntryCommentRequestBuilder(@NotNull String userKey, int entryId, int commentId) {
+            if (Strings.isNullOrEmpty(userKey)) {
+                throw new IllegalArgumentException("Parameter cannot be null or empty");
+            }
+            if (entryId < 0 || commentId < 0) {
+                throw new IllegalArgumentException("Parameter cannot be negative");
+            }
             this.userKey = userKey;
             this.entryId = entryId;
             this.commentId = commentId;
         }
 
-        @Override
         public DeleteEntryCommentRequest build() {
             return new DeleteEntryCommentRequest(userKey, entryId, commentId);
         }

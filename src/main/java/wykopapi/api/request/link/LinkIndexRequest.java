@@ -1,56 +1,55 @@
-package wykopapi.api.request.comments;
+package wykopapi.api.request.link;
 
 import com.google.common.base.Strings;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import okhttp3.HttpUrl;
 import okhttp3.Request;
 import org.jetbrains.annotations.NotNull;
-import wykopapi.api.dto.IdResult;
+import wykopapi.api.dto.Link;
 import wykopapi.api.request.ApiRequest;
 import wykopapi.api.request.ApiRequestBuilder;
 
 import java.lang.reflect.Type;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class DeleteCommentRequest implements ApiRequest<IdResult> {
+public class LinkIndexRequest implements ApiRequest<Link> {
     private final String userKey;
-    private final int commentId;
+    private final int linkId;
 
     @Override
     public Request getRequest() {
-        return new ApiRequestBuilder("comments", "delete")
-                .addMethodParam(String.valueOf(commentId))
+        return new ApiRequestBuilder("link", "index")
+                .addMethodParam(String.valueOf(linkId))
                 .addApiParam("userkey", userKey)
                 .build();
     }
 
     @Override
     public Type getReturnType() {
-        return IdResult.class;
+        return Link.class;
     }
 
-    public static DeleteCommentRequestBuilder builder(@NotNull String userKey, int commentId) {
-        return new DeleteCommentRequestBuilder(userKey, commentId);
+    public static LinkIndexRequestBuilder builder(@NotNull String userKey, int linkId) {
+        return new LinkIndexRequestBuilder(userKey, linkId);
     }
 
-    public static class DeleteCommentRequestBuilder {
+    public static class LinkIndexRequestBuilder {
         private String userKey;
-        private int commentId;
+        private int linkId;
 
-        private DeleteCommentRequestBuilder(@NotNull String userKey, int commentId) {
+        private LinkIndexRequestBuilder(@NotNull String userKey, int linkId) {
             if (Strings.isNullOrEmpty(userKey)) {
                 throw new IllegalArgumentException("Parameter cannot be null or empty");
             }
-            if (commentId < 0) {
+            if (linkId < 0) {
                 throw new IllegalArgumentException("Parameter cannot be negative");
             }
             this.userKey = userKey;
-            this.commentId = commentId;
+            this.linkId = linkId;
         }
 
-        public DeleteCommentRequest build() {
-            return new DeleteCommentRequest(userKey, commentId);
+        public LinkIndexRequest build() {
+            return new LinkIndexRequest(userKey, linkId);
         }
     }
 }

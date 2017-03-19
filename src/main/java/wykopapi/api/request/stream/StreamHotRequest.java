@@ -1,16 +1,15 @@
 package wykopapi.api.request.stream;
 
 import com.google.gson.reflect.TypeToken;
-import okhttp3.HttpUrl;
 import okhttp3.Request;
 import wykopapi.api.dto.Entry;
-import wykopapi.api.request.AbstractRequest;
+import wykopapi.api.request.ApiRequest;
 import wykopapi.api.request.ApiRequestBuilder;
 
 import java.lang.reflect.Type;
 import java.util.List;
 
-public final class StreamHotRequest extends AbstractRequest<List<Entry>> {
+public final class StreamHotRequest implements ApiRequest<List<Entry>> {
     private final int page;
     private final int period;
     private final boolean clearOutput;
@@ -23,15 +22,11 @@ public final class StreamHotRequest extends AbstractRequest<List<Entry>> {
 
     @Override
     public Request getRequest() {
-        HttpUrl.Builder urlBuilder = newUrlBuilder()
-                .addPathSegment("stream").addPathSegment("hot")
-                .addPathSegment("page").addEncodedPathSegment(String.valueOf(page))
-                .addPathSegment("period").addEncodedPathSegment(String.valueOf(period));
-        if (clearOutput) urlBuilder.addPathSegment("output").addPathSegment("clear");
-
-        return new Request.Builder()
-                .url(urlBuilder.build()).get()
-                .build();
+        ApiRequestBuilder requestBuilder = new ApiRequestBuilder("stream", "hot")
+                .addApiParam("page", String.valueOf(page))
+                .addApiParam("period", String.valueOf(period));
+        if (clearOutput) requestBuilder.addApiParam("output", "clear");
+        return requestBuilder.build();
     }
 
     @Override
@@ -39,32 +34,35 @@ public final class StreamHotRequest extends AbstractRequest<List<Entry>> {
         return new TypeToken<List<Entry>>(){}.getType();
     }
 
-    public static class Builder implements ApiRequestBuilder<StreamHotRequest> {
+    public static StreamHotRequestBuilder builder() {
+        return new StreamHotRequestBuilder();
+    }
+
+    public static class StreamHotRequestBuilder {
         private int page;
         private int period;
         private boolean clearOutput;
 
-        public Builder() {
+        private StreamHotRequestBuilder() {
             this.page = 1;
             this.period = 12;
         }
 
-        public Builder setPage(int page) {
+        public StreamHotRequestBuilder page(int page) {
             this.page = page > 0 ? page : 1;
             return this;
         }
 
-        public Builder setPeriod(int period) {
+        public StreamHotRequestBuilder period(int period) {
             this.period = period > 0 ? period : 1;
             return this;
         }
 
-        public Builder setClearOutput(boolean clearOutput) {
+        public StreamHotRequestBuilder clearOutput(boolean clearOutput) {
             this.clearOutput = clearOutput;
             return this;
         }
 
-        @Override
         public StreamHotRequest build() {
             return new StreamHotRequest(page, period, clearOutput);
         }

@@ -1,31 +1,26 @@
 package wykopapi.api.request.pm;
 
+import com.google.common.base.Strings;
 import com.google.gson.reflect.TypeToken;
-import okhttp3.HttpUrl;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import okhttp3.Request;
+import org.jetbrains.annotations.NotNull;
 import wykopapi.api.dto.Conversation;
-import wykopapi.api.request.AbstractRequest;
+import wykopapi.api.request.ApiRequest;
 import wykopapi.api.request.ApiRequestBuilder;
 
 import java.lang.reflect.Type;
 import java.util.List;
 
-public final class ListConversationsRequest extends AbstractRequest<List<Conversation>> {
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class ListConversationsRequest implements ApiRequest<List<Conversation>> {
     private final String userKey;
-
-    private ListConversationsRequest(String userKey) {
-        this.userKey = userKey;
-    }
 
     @Override
     public Request getRequest() {
-        HttpUrl url = newUrlBuilder()
-                .addPathSegment("pm").addPathSegment("conversationslist")
-                .addPathSegment("userkey").addEncodedPathSegment(userKey)
-                .build();
-
-        return new Request.Builder()
-                .url(url).get()
+        return new ApiRequestBuilder("pm", "conversationslist")
+                .addApiParam("userkey", userKey)
                 .build();
     }
 
@@ -34,14 +29,20 @@ public final class ListConversationsRequest extends AbstractRequest<List<Convers
         return new TypeToken<List<Conversation>>(){}.getType();
     }
 
-    public static class Builder implements ApiRequestBuilder<ListConversationsRequest> {
+    public static ListConversationsRequestBuilder builder(@NotNull String userKey) {
+        return new ListConversationsRequestBuilder(userKey);
+    }
+
+    public static class ListConversationsRequestBuilder {
         private String userKey;
 
-        public Builder(String userKey) {
+        private ListConversationsRequestBuilder(@NotNull String userKey) {
+            if (Strings.isNullOrEmpty(userKey)) {
+                throw new IllegalArgumentException("Parameter cannot be null or empty");
+            }
             this.userKey = userKey;
         }
 
-        @Override
         public ListConversationsRequest build() {
             return new ListConversationsRequest(userKey);
         }

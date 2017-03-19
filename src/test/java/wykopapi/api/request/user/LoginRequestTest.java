@@ -17,7 +17,7 @@ public class LoginRequestTest {
     @Before
     public void setUp() throws Exception {
         extractor = new Extractor();
-        loginRequest = new LoginRequest.Builder("accountkey").build();
+        loginRequest = LoginRequest.builder("accountkey").build();
     }
 
     @Test

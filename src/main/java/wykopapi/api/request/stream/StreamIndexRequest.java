@@ -1,34 +1,27 @@
 package wykopapi.api.request.stream;
 
 import com.google.gson.reflect.TypeToken;
-import okhttp3.HttpUrl;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import okhttp3.Request;
-import wykopapi.api.request.AbstractRequest;
-import wykopapi.api.request.ApiRequestBuilder;
 import wykopapi.api.dto.Entry;
+import wykopapi.api.request.ApiRequest;
+import wykopapi.api.request.ApiRequestBuilder;
 
 import java.lang.reflect.Type;
 import java.util.List;
 
-public final class StreamIndexRequest extends AbstractRequest<List<Entry>> {
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class StreamIndexRequest implements ApiRequest<List<Entry>> {
     private final int page;
     private final boolean clearOutput;
 
-    private StreamIndexRequest(int page, boolean clearOutput) {
-        this.page = page;
-        this.clearOutput = clearOutput;
-    }
-
     @Override
     public Request getRequest() {
-        HttpUrl.Builder urlBuilder = newUrlBuilder()
-                .addPathSegment("stream").addPathSegment("index")
-                .addPathSegment("page").addEncodedPathSegment(String.valueOf(page));
-        if (clearOutput) urlBuilder.addPathSegment("output").addPathSegment("clear");
-
-        return new Request.Builder()
-                .url(urlBuilder.build()).get()
-                .build();
+        ApiRequestBuilder requestBuilder = new ApiRequestBuilder("stream", "index")
+                .addApiParam("page", String.valueOf(page));
+        if (clearOutput) requestBuilder.addApiParam("output", "clear");
+        return requestBuilder.build();
     }
 
     @Override
@@ -36,25 +29,28 @@ public final class StreamIndexRequest extends AbstractRequest<List<Entry>> {
         return new TypeToken<List<Entry>>(){}.getType();
     }
 
-    public static class Builder implements ApiRequestBuilder<StreamIndexRequest> {
+    public static StreamIndexRequestBuilder builder() {
+        return new StreamIndexRequestBuilder();
+    }
+
+    public static class StreamIndexRequestBuilder {
         private int page;
         private boolean clearOutput;
 
-        public Builder() {
+        private StreamIndexRequestBuilder() {
             this.page = 1;
         }
 
-        public Builder setPage(int page) {
+        public StreamIndexRequestBuilder page(int page) {
             this.page = page > 0 ? page : 1;
             return this;
         }
 
-        public Builder setClearOutput(boolean clearOutput) {
+        public StreamIndexRequestBuilder clearOutput(boolean clearOutput) {
             this.clearOutput = clearOutput;
             return this;
         }
 
-        @Override
         public StreamIndexRequest build() {
             return new StreamIndexRequest(page, clearOutput);
         }

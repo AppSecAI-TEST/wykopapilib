@@ -1,35 +1,29 @@
 package wykopapi.api.request.entries;
 
-import okhttp3.HttpUrl;
+import com.google.common.base.Strings;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import okhttp3.Request;
+import org.jetbrains.annotations.NotNull;
 import wykopapi.api.dto.VoteEntry;
-import wykopapi.api.request.AbstractRequest;
+import wykopapi.api.request.ApiRequest;
 import wykopapi.api.request.ApiRequestBuilder;
 
 import java.lang.reflect.Type;
 
-public final class UnvoteEntryCommentRequest extends AbstractRequest<VoteEntry> {
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class UnvoteEntryCommentRequest implements ApiRequest<VoteEntry> {
     private final String userKey;
     private final int entryId;
     private final int commentId;
 
-    private UnvoteEntryCommentRequest(String userKey, int entryId, int commentId) {
-        this.userKey = userKey;
-        this.entryId = entryId;
-        this.commentId = commentId;
-    }
-
     @Override
     public Request getRequest() {
-        HttpUrl url = newUrlBuilder()
-                .addPathSegment("entries").addPathSegment("unvote")
-                .addPathSegment("comment")
-                .addEncodedPathSegment(String.valueOf(entryId)).addEncodedPathSegment(String.valueOf(commentId))
-                .addPathSegment("userkey").addEncodedPathSegment(userKey)
-                .build();
-
-        return new Request.Builder()
-                .url(url).get()
+        return new ApiRequestBuilder("entries", "unvote")
+                .addMethodParam("comment")
+                .addMethodParam(String.valueOf(entryId))
+                .addMethodParam(String.valueOf(commentId))
+                .addApiParam("userkey", userKey)
                 .build();
     }
 
@@ -38,18 +32,27 @@ public final class UnvoteEntryCommentRequest extends AbstractRequest<VoteEntry> 
         return VoteEntry.class;
     }
 
-    public static class Builder implements ApiRequestBuilder<UnvoteEntryCommentRequest> {
+    public static UnvoteEntryCommentRequestBuilder builder(@NotNull String userKey, int entryId, int commentId) {
+        return new UnvoteEntryCommentRequestBuilder(userKey, entryId, commentId);
+    }
+
+    public static class UnvoteEntryCommentRequestBuilder {
         private String userKey;
         private int entryId;
         private int commentId;
 
-        public Builder(String userKey, int entryId, int commentId) {
+        private UnvoteEntryCommentRequestBuilder(@NotNull String userKey, int entryId, int commentId) {
+            if (Strings.isNullOrEmpty(userKey)) {
+                throw new IllegalArgumentException("Parameter cannot be null or empty");
+            }
+            if (entryId < 0 || commentId < 0) {
+                throw new IllegalArgumentException("Parameter cannot be negative");
+            }
             this.userKey = userKey;
             this.entryId = entryId;
             this.commentId = commentId;
         }
 
-        @Override
         public UnvoteEntryCommentRequest build() {
             return new UnvoteEntryCommentRequest(userKey, entryId, commentId);
         }

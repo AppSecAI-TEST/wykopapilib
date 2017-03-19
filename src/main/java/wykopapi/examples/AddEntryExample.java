@@ -18,23 +18,23 @@ public class AddEntryExample {
                 new FilePropertiesService("src/main/resources/application.properties");
         RequestExecutor executor = new RequestExecutor(propertiesService);
 
-        LoginRequest loginRequest = new LoginRequest.Builder(propertiesService.getAccountKey()).build();
+        LoginRequest loginRequest = LoginRequest.builder(propertiesService.getAccountKey()).build();
         Profile profile = executor.execute(loginRequest)
                 .orElseThrow(RuntimeException::new);
 
-        AddEntryRequest addEntryRequest = new AddEntryRequest.Builder(profile.getUserkey())
-                .setBody("slucham psa jak gra")
-                .setEmbedFile(new File("src/main/resources/dogpiano.jpg"))
+        AddEntryRequest addEntryRequest = AddEntryRequest.builder(profile.getUserkey())
+                .body("slucham psa jak gra")
+                .embedFile(new File("src/main/resources/dogpiano.jpg"))
                 .build();
         IdResult idResult = executor.execute(addEntryRequest)
                 .ifSuccess(e -> System.out.println(e.getId()))
                 .ifError(System.out::println)
                 .get();
 
-        AddEntryCommentRequest addEntryCommentRequest = new AddEntryCommentRequest
-                .Builder(profile.getUserkey(), idResult.getId())
-                .setBody("@" + profile.getLogin() + ": ja też xd")
-                .setEmbedFile(new File("src/main/resources/dogpiano.jpg"))
+        AddEntryCommentRequest addEntryCommentRequest = AddEntryCommentRequest
+                .builder(profile.getUserkey(), idResult.getId())
+                .body("@" + profile.getLogin() + ": ja też xd")
+                .embedFile(new File("src/main/resources/dogpiano.jpg"))
                 .build();
 
         executor.execute(addEntryCommentRequest)

@@ -1,36 +1,29 @@
 package wykopapi.api.request.entries;
 
-import okhttp3.HttpUrl;
+import com.google.common.base.Strings;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import okhttp3.Request;
+import org.jetbrains.annotations.NotNull;
 import wykopapi.api.dto.IdResult;
-import wykopapi.api.request.AbstractRequest;
+import wykopapi.api.request.ApiRequest;
 import wykopapi.api.request.ApiRequestBuilder;
 
 import java.lang.reflect.Type;
-import java.util.Collections;
 
 // TODO check if its possible to change embed url/file
-public final class EditEntryRequest extends AbstractRequest<IdResult> {
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class EditEntryRequest implements ApiRequest<IdResult> {
     private final String userKey;
-    private final String body;
     private final int entryId;
-
-    private EditEntryRequest(String userKey, int entryId, String body) {
-        this.userKey = userKey;
-        this.body = body;
-        this.entryId = entryId;
-    }
+    private final String body;
 
     @Override
     public Request getRequest() {
-        HttpUrl url = newUrlBuilder()
-                .addPathSegment("entries").addPathSegment("edit")
-                .addEncodedPathSegment(String.valueOf(entryId))
-                .addPathSegment("userkey").addEncodedPathSegment(userKey)
-                .build();
-
-        return new Request.Builder()
-                .url(url).post(createBodyFromParams(Collections.singletonMap("body", body)))
+        return new ApiRequestBuilder("entries", "edit")
+                .addMethodParam(String.valueOf(entryId))
+                .addApiParam("userkey", userKey)
+                .addPostParam("body", body)
                 .build();
     }
 
@@ -39,18 +32,24 @@ public final class EditEntryRequest extends AbstractRequest<IdResult> {
         return IdResult.class;
     }
 
-    public static class Builder implements ApiRequestBuilder<EditEntryRequest> {
-        private int entryId;
+    public static EditEntryRequestBuilder builder(@NotNull String userKey, int entryId, @NotNull String body) {
+        return new EditEntryRequestBuilder(userKey, entryId, body);
+    }
+
+    public static class EditEntryRequestBuilder {
         private String userKey;
+        private int entryId;
         private String body;
 
-        public Builder(String userKey, int entryId, String body) {
+        private EditEntryRequestBuilder(@NotNull String userKey, int entryId, @NotNull String body) {
+            if (Strings.isNullOrEmpty(userKey) || Strings.isNullOrEmpty(body)) {
+                throw new IllegalArgumentException("Parameter cannot be null or empty");
+            }
             this.userKey = userKey;
             this.entryId = entryId;
             this.body = body;
         }
 
-        @Override
         public EditEntryRequest build() {
             return new EditEntryRequest(userKey, entryId, body);
         }

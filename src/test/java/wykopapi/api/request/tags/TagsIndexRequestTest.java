@@ -18,7 +18,7 @@ public class TagsIndexRequestTest {
     @Before
     public void setUp() throws Exception {
         extractor = new Extractor();
-        request = new TagsIndexRequest.Builder().build();
+        request = TagsIndexRequest.builder().build();
     }
 
     @Test

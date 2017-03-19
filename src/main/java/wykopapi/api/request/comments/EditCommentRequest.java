@@ -1,36 +1,31 @@
 package wykopapi.api.request.comments;
 
+import com.google.common.base.Strings;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
+import org.jetbrains.annotations.NotNull;
 import wykopapi.api.dto.IdResult;
-import wykopapi.api.request.AbstractRequest;
+import wykopapi.api.request.ApiRequest;
 import wykopapi.api.request.ApiRequestBuilder;
 
 import java.lang.reflect.Type;
 import java.util.Collections;
 
 // TODO check if its possible to change embed url/file
-public final class EditCommentRequest extends AbstractRequest<IdResult> {
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class EditCommentRequest implements ApiRequest<IdResult> {
     private final String userKey;
     private final int commentId;
     private final String body;
 
-    private EditCommentRequest(String userKey, int commentId, String body) {
-        this.userKey = userKey;
-        this.commentId = commentId;
-        this.body = body;
-    }
-
     @Override
     public Request getRequest() {
-        HttpUrl url = newUrlBuilder()
-                .addPathSegment("comments").addPathSegment("edit")
-                .addEncodedPathSegment(String.valueOf(commentId))
-                .addPathSegment("userkey").addEncodedPathSegment(userKey)
-                .build();
-
-        return new Request.Builder()
-                .url(url).post(createBodyFromParams(Collections.singletonMap("body", body)))
+        return new ApiRequestBuilder("comments", "edit")
+                .addMethodParam(String.valueOf(commentId))
+                .addApiParam("userkey", userKey)
+                .addPostParam("body", body)
                 .build();
     }
 
@@ -39,18 +34,27 @@ public final class EditCommentRequest extends AbstractRequest<IdResult> {
         return IdResult.class;
     }
 
-    public static class Builder implements ApiRequestBuilder<EditCommentRequest> {
+    public static EditCommentRequestBuilder builder(@NotNull String userKey, int commentId, @NotNull String body) {
+        return new EditCommentRequestBuilder(userKey, commentId, body);
+    }
+
+    public static class EditCommentRequestBuilder {
         private String userKey;
         private int commentId;
         private String body;
 
-        public Builder(String userKey, int commentId, String body) {
+        private EditCommentRequestBuilder(@NotNull String userKey, int commentId, @NotNull String body) {
+            if (Strings.isNullOrEmpty(userKey) || Strings.isNullOrEmpty(body)) {
+                throw new IllegalArgumentException("Parameter cannot be null or empty");
+            }
+            if (commentId < 0) {
+                throw new IllegalArgumentException("Parameter cannot be negative");
+            }
             this.userKey = userKey;
             this.commentId = commentId;
             this.body = body;
         }
 
-        @Override
         public EditCommentRequest build() {
             return new EditCommentRequest(userKey, commentId, body);
         }

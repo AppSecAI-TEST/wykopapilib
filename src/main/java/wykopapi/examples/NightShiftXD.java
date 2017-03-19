@@ -14,13 +14,13 @@ public class NightShiftXD {
         PropertiesService propertiesService = new FilePropertiesService("src/main/resources/application.properties");
         RequestExecutor executor = new RequestExecutor(propertiesService);
 
-        LoginRequest loginRequest = new LoginRequest.Builder(propertiesService.getAccountKey()).build();
+        LoginRequest loginRequest = LoginRequest.builder(propertiesService.getAccountKey()).build();
         String userKey = executor.execute(loginRequest)
                 .orElseThrow(RuntimeException::new)
                 .getUserkey();
 
-        AddEntryRequest addEntryRequest = new AddEntryRequest.Builder(userKey)
-                .setBody("NOCNA!! 01:00:00 #listaobecnosci")
+        AddEntryRequest addEntryRequest = AddEntryRequest.builder(userKey)
+                .body("NOCNA!! 01:00:00 #listaobecnosci")
                 .build();
 
         while (true) {

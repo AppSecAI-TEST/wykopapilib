@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Link {
+public final class Link {
     private Integer id;
     private String title;
     private String description;

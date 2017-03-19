@@ -1,9 +1,8 @@
-package wykopapi.api.request.comments;
+package wykopapi.api.request.link;
 
 import com.google.common.base.Strings;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import okhttp3.HttpUrl;
 import okhttp3.Request;
 import org.jetbrains.annotations.NotNull;
 import wykopapi.api.request.ApiRequest;
@@ -13,16 +12,16 @@ import java.lang.reflect.Type;
 
 // TODO proper return type
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class MinusCommentRequest implements ApiRequest<String> {
+public class BuryLinkRequest implements ApiRequest<String> {
     private final String userKey;
     private final int linkId;
-    private final int commentId;
+    private final int buryReasonId; // TODO ???
 
     @Override
     public Request getRequest() {
-        return new ApiRequestBuilder("comments", "minus")
+        return new ApiRequestBuilder("link", "dig")
                 .addMethodParam(String.valueOf(linkId))
-                .addMethodParam(String.valueOf(commentId))
+                .addMethodParam(String.valueOf(buryReasonId))
                 .addApiParam("userkey", userKey)
                 .build();
     }
@@ -32,29 +31,29 @@ public final class MinusCommentRequest implements ApiRequest<String> {
         return String.class;
     }
 
-    public static MinusCommentRequestBuilder builder(@NotNull String userKey, int linkId, int commentId) {
-        return new MinusCommentRequestBuilder(userKey, linkId, commentId);
+    public static BuryLinkRequestBuilder builder(@NotNull String userKey, int linkId, int buryReasonId) {
+        return new BuryLinkRequestBuilder(userKey, linkId, buryReasonId);
     }
 
-    public static class MinusCommentRequestBuilder {
+    public static class BuryLinkRequestBuilder {
         private String userKey;
         private int linkId;
-        private int commentId;
+        private int buryReasonId;
 
-        private MinusCommentRequestBuilder(@NotNull String userKey, int linkId, int commentId) {
+        private BuryLinkRequestBuilder(@NotNull String userKey, int linkId, int buryReasonId) {
             if (Strings.isNullOrEmpty(userKey)) {
                 throw new IllegalArgumentException("Parameter cannot be null or empty");
             }
-            if (linkId < 0 || commentId < 0) {
-                throw new IllegalArgumentException("Parameter cannot be negative");
+            if (linkId < 0 || buryReasonId < 0) {
+                throw new IllegalArgumentException("Parameters cannot be negative");
             }
             this.userKey = userKey;
             this.linkId = linkId;
-            this.commentId = commentId;
+            this.buryReasonId = buryReasonId;
         }
 
-        public MinusCommentRequest build() {
-            return new MinusCommentRequest(userKey, linkId, commentId);
+        public BuryLinkRequest build() {
+            return new BuryLinkRequest(userKey, linkId, buryReasonId);
         }
     }
 }

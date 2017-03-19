@@ -1,32 +1,27 @@
 package wykopapi.api.request.entries;
 
-import okhttp3.HttpUrl;
+import com.google.common.base.Strings;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import okhttp3.Request;
+import org.jetbrains.annotations.NotNull;
 import wykopapi.api.dto.VoteEntry;
-import wykopapi.api.request.AbstractRequest;
+import wykopapi.api.request.ApiRequest;
 import wykopapi.api.request.ApiRequestBuilder;
 
 import java.lang.reflect.Type;
 
-public final class VoteEntryRequest extends AbstractRequest<VoteEntry> {
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class VoteEntryRequest implements ApiRequest<VoteEntry> {
     private final String userKey;
     private final int entryId;
 
-    private VoteEntryRequest(String userKey, int entryId) {
-        this.userKey = userKey;
-        this.entryId = entryId;
-    }
-
     @Override
     public Request getRequest() {
-        HttpUrl url = newUrlBuilder()
-                .addPathSegment("entries").addPathSegment("vote")
-                .addPathSegment("entry").addEncodedPathSegment(String.valueOf(entryId))
-                .addPathSegment("userkey").addEncodedPathSegment(userKey)
-                .build();
-
-        return new Request.Builder()
-                .url(url).get()
+        return new ApiRequestBuilder("entries", "vote")
+                .addMethodParam("entry")
+                .addMethodParam(String.valueOf(entryId))
+                .addApiParam("userkey", userKey)
                 .build();
     }
 
@@ -35,16 +30,25 @@ public final class VoteEntryRequest extends AbstractRequest<VoteEntry> {
         return VoteEntry.class;
     }
 
-    public static class Builder implements ApiRequestBuilder<VoteEntryRequest> {
+    public static VoteEntryRequestBuilder builder(@NotNull String userKey, int entryId) {
+        return new VoteEntryRequestBuilder(userKey, entryId);
+    }
+
+    public static class VoteEntryRequestBuilder {
         private String userKey;
         private int entryId;
 
-        public Builder(String userKey, int entryId) {
+        private VoteEntryRequestBuilder(@NotNull String userKey, int entryId) {
+            if (Strings.isNullOrEmpty(userKey)) {
+                throw new IllegalArgumentException("Parameter cannot be null or empty");
+            }
+            if (entryId < 0) {
+                throw new IllegalArgumentException("Parameter cannot be negative");
+            }
             this.userKey = userKey;
             this.entryId = entryId;
         }
 
-        @Override
         public VoteEntryRequest build() {
             return new VoteEntryRequest(userKey, entryId);
         }

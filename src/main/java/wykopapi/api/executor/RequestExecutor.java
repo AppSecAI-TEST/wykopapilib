@@ -14,7 +14,7 @@ import wykopapi.api.dto.ErrorInfo;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
-public class RequestExecutor {
+public final class RequestExecutor {
     private final Logger logger = LoggerFactory.getLogger(RequestExecutor.class);
 
     private final OkHttpClient httpClient;

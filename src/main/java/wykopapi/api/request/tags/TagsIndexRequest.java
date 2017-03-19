@@ -1,28 +1,21 @@
 package wykopapi.api.request.tags;
 
 import com.google.gson.reflect.TypeToken;
-import okhttp3.HttpUrl;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import okhttp3.Request;
 import wykopapi.api.dto.Tag;
-import wykopapi.api.request.AbstractRequest;
+import wykopapi.api.request.ApiRequest;
 import wykopapi.api.request.ApiRequestBuilder;
 
 import java.lang.reflect.Type;
 import java.util.List;
 
-public final class TagsIndexRequest extends AbstractRequest<List<Tag>> {
-    private TagsIndexRequest() {
-    }
-
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class TagsIndexRequest implements ApiRequest<List<Tag>> {
     @Override
     public Request getRequest() {
-        HttpUrl url = newUrlBuilder()
-                .addPathSegment("tags").addPathSegment("index")
-                .build();
-
-        return new Request.Builder()
-                .url(url).get()
-                .build();
+        return new ApiRequestBuilder("tags", "index").build();
     }
 
     @Override
@@ -30,8 +23,14 @@ public final class TagsIndexRequest extends AbstractRequest<List<Tag>> {
         return new TypeToken<List<Tag>>(){}.getType();
     }
 
-    public static class Builder implements ApiRequestBuilder<TagsIndexRequest> {
-        @Override
+    public static TagsIndexRequestBuilder builder() {
+        return new TagsIndexRequestBuilder();
+    }
+
+    public static class TagsIndexRequestBuilder {
+        private TagsIndexRequestBuilder() {
+        }
+
         public TagsIndexRequest build() {
             return new TagsIndexRequest();
         }
