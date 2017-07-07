@@ -14,6 +14,7 @@ import java.io.IOException;
 
 public class AddEntryExample {
     public static void main(String[] args) throws IOException {
+
         PropertiesService propertiesService =
                 new FilePropertiesService("src/main/resources/application.properties");
         RequestExecutor executor = new RequestExecutor(propertiesService);
@@ -40,5 +41,6 @@ public class AddEntryExample {
         executor.execute(addEntryCommentRequest)
                 .ifSuccess(e -> System.out.println(e.getId()))
                 .ifError(System.out::println);
+
     }
 }

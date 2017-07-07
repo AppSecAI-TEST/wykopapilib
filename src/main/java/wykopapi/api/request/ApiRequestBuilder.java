@@ -52,7 +52,7 @@ public final class ApiRequestBuilder {
         return this;
     }
 
-    public ApiRequestBuilder addApiParam(@NotNull String key, @NotNull String value, boolean condition) {
+    public ApiRequestBuilder addApiParam(@NotNull String key, String value, boolean condition) {
         if (condition) addApiParam(key, value);
         return this;
     }
@@ -65,7 +65,7 @@ public final class ApiRequestBuilder {
         return this;
     }
 
-    public ApiRequestBuilder addPostParam(@NotNull String key, @NotNull String value, boolean condition) {
+    public ApiRequestBuilder addPostParam(@NotNull String key, String value, boolean condition) {
         if (condition) addPostParam(key, value);
         return this;
     }
